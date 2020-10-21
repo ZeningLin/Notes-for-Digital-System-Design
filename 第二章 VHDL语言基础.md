@@ -64,7 +64,18 @@ CONFIGURATION configuration_name OF entity_name IS
   END FOR;
 END configuration_name;
 ```
-- `architecture_name`指多个结构体中要选用的结构体名称
-- 
+- `architecture_name` 指多个结构体中要选用的结构体名称
+
+
 ----
 ## 2.4 VHDL数据对象
+
+### 2.4.1 信号
+
+#### 信号的定义
+   ```VHDL
+   SIGNAL signal_name: DATATYPE := value  --使用:=对信号赋初值
+                                          --这个初始值只用于仿真，综合器不支持
+   ```
+- 信号赋值使用 `<=` 注意此操作有**延时**
+  - 对于在进程内的信号赋值操作，每次进程`process`被触发后，虽然进程内有赋值语句，但是**只有当这次进程结束时信号的赋值语句才会生效**
