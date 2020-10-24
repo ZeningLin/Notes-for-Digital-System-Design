@@ -6,6 +6,7 @@
 - Entity 实体
 - Architecture 结构体
 - Configuration 配置
+
 ### 2.3.1 库
 - IEEE库
   - `std_logic_1164`: *functions & data types for multi-level logic*
@@ -85,7 +86,7 @@ VARIABLE variable_name:dtype:=value
 
 ### 2.4.3 信号
 
-#### 信号的定义
+#### 2.4.3.1 信号的定义
    ```VHDL
    SIGNAL signal_name:dtype:=value  --使用:=对信号赋初值
                                           --这个初始值只用于仿真，综合器不支持
@@ -95,7 +96,74 @@ VARIABLE variable_name:dtype:=value
   - 对于在进程内的信号赋值操作，每次进程`process`被触发后，虽然进程内有赋值语句，但是**只有当这次进程结束时信号的赋值语句才会生效**
 - **All `PORTS` of an `ENTITY` are signals by default**
 
-#### 信号与变量的比较
+#### 2.4.3.2 信号与变量的比较
 - `SIGNAL`是global量，可在多个`PROCESS`中传递，但是`VARIABLE`是local量，仅在当前的进程、子程序中有效
 - `SIGNAL`除了值以外还存放了历史信息、波形值等，可用于仿真，但是`VARIABLE`不可以仿真
 - `PROCESS`只对信号敏感，不对变量敏感
+
+----
+## 2.5 VHDL数据类型
+
+### 2.5.1 Standard Datatype
+
+#### Integer
+- For representation of bus width, **bit operations/logic operations are not permitted**, needs **range specification**
+- 4 byte length
+
+#### Real
+- Floating point numbers
+- A majority of EDA tools do not support float operations
+
+#### Natural/ Positive
+- Subset of integer
+- Needs **range specification**
+
+#### Bit
+- Single value
+- Single quote `''`
+
+#### Bit_vector
+- Double quote `""`
+
+#### Character
+- ASCII value
+- Case sensetive
+- Single quote `''`
+
+#### String
+- Vector of `Character`
+- Double quote `""`
+
+#### Boolean
+- Two status, `TRUE` or `FALSE`
+
+#### Time
+- For simulation
+
+#### Severity level
+- error reminding
+
+### 2.5.2 IEEE Defined Datatype
+
+#### std_logic
+- 8-valued logic
+- Logic Levels:
+  - 'X': unknown, impossible to determine this value
+  - 'Z': high impedance
+  - '0': logic 0
+  - '1': logic 1
+  - 'W': weak signal, impossible to tell if it should be 0 or 1
+  - 'L': weak signal that should go to 0
+  - 'H': weak signal that should go to 1
+  - '-': don't care
+- **resolved logic system**: if any two std_logic signals are connected to the same node, then conflicting logic levels are automatically resolved according to the rules
+
+  <img src="./2-5-2-Resolved-Logic-System.png" width="150" height="150"/>
+
+#### Std_ulogic
+- Output wires should never be connected together directly
+- Logic Levels:
+  - 'U': uninitialized
+  - 其他8种与`std_logic`相同
+
+### 2.5.3 User-defined datatypes
