@@ -167,3 +167,4 @@ VARIABLE variable_name:dtype:=value
   - 其他8种与`std_logic`相同
 
 ### 2.5.3 User-defined datatypes
+-test
