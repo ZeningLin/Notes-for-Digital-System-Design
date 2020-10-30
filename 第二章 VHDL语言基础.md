@@ -157,13 +157,56 @@ VARIABLE variable_name:dtype:=value
   - 'H': weak signal that should go to 1
   - '-': don't care
 - **resolved logic system**: if any two std_logic signals are connected to the same node, then conflicting logic levels are automatically resolved according to the rules
+- Attention: **case-sensitive** , e.g. High impedance is represented by **‘Z’** rather than ‘z’ .
 
   <img src="./2-5-2-Resolved-Logic-System.png" width="150" height="150"/>
 
 #### Std_ulogic
+- Unresolved logic system
 - Output wires should never be connected together directly
 - Logic Levels:
   - 'U': uninitialized
   - 其他8种与`std_logic`相同
 
 ### 2.5.3 User-defined datatypes
+```VHDL
+TYPE Type_name IS Type_def OF basic_dtype;
+-- or
+TYPE Type_name IS Type_def;
+```
+
+#### User-defined datatypes
+- Enumeration types
+  - used for state machine
+  ```VHDL
+  TYPE week IS (sun, mon, tue, wed, thu, fri, sat) ;
+  ```
+- Subtype
+  - sub-set of existing types
+  ```VHDL
+  SUBTYPE natural IS INTEGER RANGE 0 TO INTEGER'HIGH;
+  ```
+
+- Integer, Real
+  - 若整数和实数的取值范围太大，综合其将无法综合，因此需要限定范围
+  ```VHDL
+  TYPE percent IS INTEGER RANGE -100 TO 100; 
+  ```
+
+- Array
+  ```VHDL
+  TYPE array_name IS ARRAY(range) OF dtype;
+  ```
+  例：
+  ```VHDL
+  TYPE stb IS ARRAY(7 DOWNTO 0) OF std_logic;
+  ```
+
+- Records
+  - 与array类似，只不过records可以包含不同数据类型的元素
+  ```VHDL
+  TYPE birthday IS RECORD
+    day: INTEGER RANGE 1 TO 31;
+    month: month_name;
+  END RECORD;
+  ```
