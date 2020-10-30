@@ -161,12 +161,22 @@ VARIABLE variable_name:dtype:=value
 
   <img src="./2-5-2-Resolved-Logic-System.png" width="150" height="150"/>
 
+#### std_logic_vector
+- no extrapackage required
+- only logical operation
+- with `IEEE.std_logic_unsigned` or `IEEE.std_logic_signed` included, arithmetic operations are allowed.
+
+
 #### Std_ulogic
 - Unresolved logic system
 - Output wires should never be connected together directly
 - Logic Levels:
   - 'U': uninitialized
   - 其他8种与`std_logic`相同
+
+#### signed and unsigned
+- Package `IEEE.std_logic_arith.all` should be included.
+- Arithmetic operations only
 
 ### 2.5.3 User-defined datatypes
 ```VHDL
@@ -210,3 +220,6 @@ TYPE Type_name IS Type_def;
     month: month_name;
   END RECORD;
   ```
+
+### 2.5.4 Data Conversion
+<img src="./2-5-4-Data-Conversion.png" width="500" height="260"/>
