@@ -223,3 +223,15 @@ TYPE Type_name IS Type_def;
 
 ### 2.5.4 Data Conversion
 <img src="./2-5-4-Data-Conversion.png" width="500" height="260"/>
+
+
+
+
+
+
+
+
+
+### If语句
+
+- Incomplete `if` statement may introduce register: the sequential logic and combinational logic are mixed in the same process (introduce combinational logic in sequential logic or introduce sequential logic in combinational logic), unwanted register may be introduced. 
