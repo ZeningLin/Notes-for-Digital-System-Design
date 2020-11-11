@@ -224,14 +224,28 @@ TYPE Type_name IS Type_def;
 ### 2.5.4 Data Conversion
 <img src="./2-5-4-Data-Conversion.png" width="500" height="260"/>
 
+----
+## 2.6 VHDL运算符
+### 2.6.1 算术运算符
+- `**` 乘方
+- `REM` 取余
+  - `a REM b`所得结果与`a`符号相同，绝对值小于`b`绝对值
+- `MOD` 取模
+  - `a MOD b`所得结果与`b`符号相同，绝对值小于`b`绝对值
+- `SLA` `SRA` 算术左移 算术右移
+  - 左移保持最低位不变，右移保持最高位不变，所有数据（包括最高位）左移或右移
+  - 见书本P21图2-6
 
+**综合：加减乘可以综合，除要满足除数为2的n次幂才可以综合（移位），其他运算均不可综合**
 
+### 2.6.2 逻辑运算符
+注意P22图2-7的`SLL` `SRL` `ROL` `ROR`
 
+### 2.6.3 关系运算符
+- `/=`不等于
+- 所有关系运算符的两个操作数必须**类型相同**
 
-
-
-
-
+----
+## 2.7 VHDL基本语句
 ### If语句
-
 - Incomplete `if` statement may introduce register: the sequential logic and combinational logic are mixed in the same process (introduce combinational logic in sequential logic or introduce sequential logic in combinational logic), unwanted register may be introduced. 
