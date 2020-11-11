@@ -247,5 +247,48 @@ TYPE Type_name IS Type_def;
 
 ----
 ## 2.7 VHDL基本语句
-### If语句
+### 2.7.1 Concurrent Statements
+#### 2.7.1.1 When...else Statement
+```VHDL
+赋值目标 <= 表达式 WHEN 赋值条件 ELSE
+           表达式 WHEN 赋值条件 ELSE
+           表达式 WHEN 赋值条件 ELSE
+           ...
+           表达式; --最后才有';'，其他位置没有
+```
+**优先级从最上面的语句开始向下逐一递减，按顺序判断**
+
+#### 2.7.1.2 With...select Statement
+```VHDL
+-- 类比switch case语句
+WITH 选择表达式 SELECT
+赋值目标 <= 表达式 WHEN 条件, --注意用','分隔
+           表达式 WHEN 条件,
+           表达式 WHEN 条件,
+           ...
+           表达式 WHEN OTHERS;  --注意最后用';'
+                                --最后应当用OTHERS涵盖所有未指定的情况
+```
+**所有语句同时(simutaneously)判断，不分优先级**
+
+#### 2.7.1.3 Component Instantialtion Statement (元件例化语句)
+```VHDL
+--------- 将设计实体定义为元件，该实体已经预先定义好 ---------
+COMPONENT component_name IS
+  GENERIC(类属表);  --optional
+  PORT(端口名表)    --compulsory, instantiation
+END COMPONENT;
+
+------------------------ 调用方式 -------------------------
+object_name: component_name GENERIC MAP(...); --写入例化的类属参数
+                            PORT MAP(...);  --写入端口映射
+```
+- **在`ARCHITECTURE`中应放在`BEGIN`语句前**
+- 端口映射有两种方式
+  - 对照COMPONENT的端口名表，按顺序写入例化的端口
+  - 使用 `例化端口名>=端口名表中的端口名` 的格式
+
+
+### 2.7.2 Sequential Statements
+#### If
 - Incomplete `if` statement may introduce register: the sequential logic and combinational logic are mixed in the same process (introduce combinational logic in sequential logic or introduce sequential logic in combinational logic), unwanted register may be introduced. 
