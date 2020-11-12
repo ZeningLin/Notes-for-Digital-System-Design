@@ -320,5 +320,19 @@ object_name: component_name GENERIC MAP(...); --写入例化的类属参数
 
 
 ### 2.7.2 Sequential Statements
-#### If
-- Incomplete `if` statement may introduce register: the sequential logic and combinational logic are mixed in the same process (introduce combinational logic in sequential logic or introduce sequential logic in combinational logic), unwanted register may be introduced. 
+#### 2.7.2.1 If-then-else statements
+```VHDL
+if first_conditon then
+  statements
+elsif second_condition then     --注意为 elsif
+  statements
+else
+  statements
+end if;
+```
+- 每一个condition必须为boolean类型，可以为signal, constant, variable
+- If statements are sythesised using multiplexers
+
+- **Incomplete `if` statement (without `else` part) may introduce register: the sequential logic and combinational logic are mixed in the same process (introduce combinational logic in sequential logic or introduce sequential logic in combinational logic), unwanted register may be introduced.**  
+<img src="./pictures/2-7-2-Incomplete-If-Statement.png" width=500>
+
