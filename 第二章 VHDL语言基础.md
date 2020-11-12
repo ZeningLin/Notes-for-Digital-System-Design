@@ -378,3 +378,16 @@ END LOOP 标号;
   - `EXIT 标号 WHEN 条件`
 - `NEXT`：满足条件直接进入下一个循环
   - `NEXT 标号 WHEN 条件`
+
+
+#### 2.7.2.6 Wait Statement
+- `WAIT`
+- `WAIT ON`
+  - Accept multiple signals
+- `WAIT UNTIL`
+  - Accept only one signal
+  - Must be the first statement in the process
+- `WAIT FOR`
+  - intended for **simulation only**
+  - example: `WAIT FOR 5ns`
+
