@@ -317,7 +317,7 @@ object_name: component_name GENERIC MAP(...); --写入例化的类属参数
 
 - 启动`Process`的两种方式：敏感参数表和`WAIT`语句，两者不能并存
 - 敏感参数表和`WAIT`语句的内容必须为`signal`
-- WAIT不能被综合器综合，只能用于测试基准
+- **WAIT不能被综合器综合**，只能用于测试基准
 
 
 ### 2.7.2 Sequential Statements
@@ -349,3 +349,32 @@ CASE control_expression IS
 END CASE;
 ```
 
+#### 2.7.2.3 For Loops
+```VHDL
+FOR loop_parameter IN conditions LOOP
+  statements;
+END LOOP;
+```
+- The `loop_parameter` is **implicitly declared and cannot be references outside the loop**
+- `loop parameter` cannot be modified inside the loop
+- `for loops` are synthesised by unrolling the loop and generating multiple copies of the hardware described within the loop
+
+#### 2.7.2.4 While Loops
+```VHDL
+WHILE conditions LOOP
+  statements;
+END LOOP;
+```
+- **`While loops` are not synthesisable since it is not generally known how many iterations will be executed**
+
+#### 2.7.2.5 Infinite Loop
+```VHDL
+标号: LOOP
+  statements;
+END LOOP 标号;
+```
+控制loop的关键字：
+- `EXIT`： 满足条件退出循环
+  - `EXIT 标号 WHEN 条件`
+- `NEXT`：满足条件直接进入下一个循环
+  - `NEXT 标号 WHEN 条件`
