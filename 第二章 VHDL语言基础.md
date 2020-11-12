@@ -271,7 +271,7 @@ WITH 选择表达式 SELECT
 ```
 **所有语句同时(simutaneously)判断，不分优先级**
 
-#### 2.7.1.3 Component Instantialtion Statement (元件例化语句)
+#### 2.7.1.3 Component Instantiation Statement (元件例化语句)
 ```VHDL
 --------- 将设计实体定义为元件，该实体已经预先定义好 ---------
 COMPONENT component_name IS
@@ -287,6 +287,30 @@ object_name: component_name GENERIC MAP(...); --写入例化的类属参数
 - 端口映射有两种方式
   - 对照COMPONENT的端口名表，按顺序写入例化的端口
   - 使用 `例化端口名>=端口名表中的端口名` 的格式
+
+#### 2.7.1.4 Generate Statement
+##### For Generate
+```VHDL
+---------For Generate--------
+[标号:]FOR 循环变量 IN 取值范围 GENERATE
+        说明部分;
+       BEGIN
+        并行语句;
+       END GENERATE[标号];
+```
+- 生成L个component单元，需要长度为L+1的array of signals作为中继连接，形成component单元"链表"，表头表尾需要分配连接到上述array of signals的头尾
+
+##### If Generate
+```VHDL
+---------If Generate--------
+[标号:]IF 条件 GENERATE
+        说明部分;
+       BEGIN
+        并行语句;
+       END GENERATE[标号];
+```
+- 生成L个component单元，需要长度为L-1的array of signals作为中继连接，形成component单元"链表"，表头表尾不需要分配连接(课本P29例2-13)
+
 
 
 ### 2.7.2 Sequential Statements
