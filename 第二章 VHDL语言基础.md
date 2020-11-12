@@ -391,3 +391,9 @@ END LOOP 标号;
   - intended for **simulation only**
   - example: `WAIT FOR 5ns`
 
+### 2.7.3 Attributes Statements
+#### 2.7.3.1 Data Attributes
+- return information regarding a `data vector`
+
+#### 2.7.3.1 Signal Attributes
+- serve to monitor a signal (return `TRUE` or `FALSE`)
