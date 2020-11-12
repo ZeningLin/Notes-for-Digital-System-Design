@@ -268,6 +268,7 @@ WITH 选择表达式 SELECT
            ...
            表达式 WHEN OTHERS;  --注意最后用';'
                                 --最后应当用OTHERS涵盖所有未指定的情况
+                                --若最后要不做操作，则表达式使用`UNAFFECTED`
 ```
 **所有语句同时(simutaneously)判断，不分优先级**
 
@@ -335,4 +336,16 @@ end if;
 
 - **Incomplete `if` statement (without `else` part) may introduce register: the sequential logic and combinational logic are mixed in the same process (introduce combinational logic in sequential logic or introduce sequential logic in combinational logic), unwanted register may be introduced.**  
 <img src="./pictures/2-7-2-Incomplete-If-Statement.png" width=500>
+
+#### 2.7.2.2 Case Statements
+```VHDL
+CASE control_expression IS
+  WHEN test_expression1 => statements1;
+  WHEN test_expression2 => statements2;
+  ...
+  WHEN OTHERS => statements_others; --used to guarantee that all 
+                                    --the possibilities are covered
+                                    --`NULL` can be used to represent 'no operation'
+END CASE;
+```
 
