@@ -93,7 +93,7 @@ VARIABLE variable_name:dtype:=value
    ```
 - 信号在声明时用`:= `赋初值
 - 信号赋值使用 `<=` 注意此操作有**延时**
-  - 对于在进程内的信号赋值操作，每次进程`process`被触发后，虽然进程内有赋值语句，但是**只有当这次进程结束时信号的赋值语句才会生效**
+  - 对于在进程内的信号赋值操作，每次进程`process`被触发后，虽然进程内有赋值语句，但是**只有当这次进程挂起时信号的赋值语句才会生效**
 - **All `PORTS` of an `ENTITY` are signals by default**
 
 #### 2.4.3.2 信号与变量的比较
@@ -311,6 +311,12 @@ object_name: component_name GENERIC MAP(...); --写入例化的类属参数
 ```
 - 生成L个component单元，需要长度为L-1的array of signals作为中继连接，形成component单元"链表"，表头表尾不需要分配连接(课本P29例2-13)
 
+#### 2.7.1.5 Process Statement
+*`WAIT`语句格式见课本P26例2-10*
+
+- 启动`Process`的两种方式：敏感参数表和`WAIT`语句，两者不能并存
+- 敏感参数表和`WAIT`语句的内容必须为`signal`
+- WAIT不能被综合器综合，只能用于测试基准
 
 
 ### 2.7.2 Sequential Statements
