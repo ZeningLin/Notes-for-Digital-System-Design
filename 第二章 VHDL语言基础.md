@@ -400,3 +400,72 @@ END LOOP 标号;
 - serve to monitor a signal (return `TRUE` or `FALSE`)
 <img src="./pictures/2-7-3-Signal-Attributes.png"> 
 
+----
+## 2.8 测试基准
+
+
+----
+## 2.9 其他构件
+### 2.9.1 Block
+- **Concurrent Statements**
+```VHDL
+label: BLOCK (guard expression) --BLOCK is excuted only when the 
+                                --guard expression is TRUE
+  [declarative part]
+BEGIN
+  concurrent_guarded_an_unguarded_statements
+END BLOCK label;
+```
+
+### 2.9.2 Function
+- **Sequential Statements**
+- **Cannot** have the statements: `WAIT`, `SIGNAL` declarations and `COMPONENT` instantialtions
+
+```VHDL
+-------------------------Declaration------------------------
+FUNCTION function_name (parameters: parameter_type) RETURN return_dtype;
+----------------------------Body----------------------------
+FUNCTION function_name (parameters: parameter_type) RETURN return_dtype IS
+  Statements;
+BEGIN
+  Sequential Statements;
+END function_name
+```
+
+- 函数的参数显然是输入类型，因此不需要用`IN` `OUT`等方向类型说明
+- 函数参数只能为`constant`和`signal`
+- No range specification should be included
+- Only **one** return value
+- 不允许在函数中使用元件例化语句
+
+
+- 如果只在一个结构体中定义并调用函数，则仅在结构体的说明部分定义函数体即可
+- 如果将函数封装入`package`中，那么在程序开始要导入`package`；函数在`package`中定义，且要包括`Declaration`和`Body`两部分
+
+### 2.9.3 Procedure
+```VHDL
+-------------------------Declaration------------------------
+--注意没有返回值说明
+PROCEDURE procedure_name (parameters: parameter_type); 
+----------------------------Body----------------------------
+PROCEDURE procedure_name (parameters: parameter_type) IS
+  Statements;
+BEGIN
+  Sequential Statements;
+END procedure_name
+```
+- 参数需要方向类型说明
+- Return **more than one** value
+- 参数可以为`constant` `signal` 和 `variable`
+- 输出默认为`variable`类型
+- 不允许在过程中使用元件例化语句
+
+### 2.9.4 Package
+```VHDL
+PACKAGE package_name IS
+  Package_head_statements;
+END package_name;
+PACKAGE BODY package_name IS
+  package_somponents_and_statements;
+END package_name
+```
