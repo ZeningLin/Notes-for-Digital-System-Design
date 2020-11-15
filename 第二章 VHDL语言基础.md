@@ -394,6 +394,9 @@ END LOOP 标号;
 ### 2.7.3 Attributes Statements
 #### 2.7.3.1 Data Attributes
 - return information regarding a `data vector`
+<img src="./pictures/2-7-3-Data-Attributes.png">
 
 #### 2.7.3.1 Signal Attributes
 - serve to monitor a signal (return `TRUE` or `FALSE`)
+<img src="./pictures/2-7-3-Signal-Attributes.png"> 
+
