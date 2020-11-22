@@ -324,11 +324,11 @@ object_name: component_name GENERIC MAP(...); --写入例化的类属参数
 #### 2.7.2.1 If-then-else statements
 ```VHDL
 IF first_conditon THEN
-  statements
+  statements;
 ELSIF second_condition THEN     --注意为 elsif
-  statements
+  statements;
 ELSE
-  statements
+  statements;
 END IF;
 ```
 - 每一个condition必须为boolean类型，可以为signal, constant, variable
