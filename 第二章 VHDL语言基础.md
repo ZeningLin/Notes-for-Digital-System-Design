@@ -32,7 +32,7 @@ END [ENTITY] entity_name; --分号结尾
 
 - `entity_name` 不能以数字开头
 - `[类属参数说明]` 是**常数**，用于说明时间参数、总线宽度等静态信息
-- `-[端口说明]` 的`dtype`有四种，分别为：
+- `[端口说明]` 的`dtype`有四种，分别为：
   - IN
   - OUT
   - INOUT
@@ -159,7 +159,7 @@ VARIABLE variable_name:dtype:=value
 - **resolved logic system**: if any two std_logic signals are connected to the same node, then conflicting logic levels are automatically resolved according to the rules
 - Attention: **case-sensitive** , e.g. High impedance is represented by **‘Z’** rather than ‘z’ .
 
-  <img src="./pictures/2-5-2-Resolved-Logic-System.png" width="150" height="150"/>
+  <img src="./pictures/2-5-2-Resolved-Logic-System.png" />
 
 #### std_logic_vector
 - no extrapackage required
@@ -167,7 +167,7 @@ VARIABLE variable_name:dtype:=value
 - with `IEEE.std_logic_unsigned` or `IEEE.std_logic_signed` included, arithmetic operations are allowed.
 
 
-#### Std_ulogic
+#### std_ulogic
 - Unresolved logic system
 - Output wires should never be connected together directly
 - Logic Levels:
