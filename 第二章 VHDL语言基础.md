@@ -345,7 +345,8 @@ CASE control_expression IS
   ...
   WHEN OTHERS => statements_others; --used to guarantee that all 
                                     --the possibilities are covered
-                                    --`NULL` can be used to represent 'no operation'
+                                    --`NULL` can be used to represent 
+                                    --'no operation'
 END CASE;
 ```
 
