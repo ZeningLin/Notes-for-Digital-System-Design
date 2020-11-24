@@ -82,6 +82,7 @@ period2 <= period1'delayed(10ns);
 ### General Stimulus
 - Use `wait` and `process`
 - Aims to cover all possibilites of inputs
+- Make use of `for` loop
 
 
 ### Typical Errors
