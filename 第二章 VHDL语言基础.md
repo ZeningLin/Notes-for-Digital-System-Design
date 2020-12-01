@@ -332,7 +332,7 @@ ELSE
 END IF;
 ```
 - 每一个condition必须为boolean类型，可以为signal, constant, variable
-- If statements are sythesised using multiplexers
+- If statements are sythesised using **multiplexers**
 
 - **Incomplete `if` statement (without `else` part) may introduce register: the sequential logic and combinational logic are mixed in the same process (introduce combinational logic in sequential logic or introduce sequential logic in combinational logic), unwanted register may be introduced.**  
 <img src="./pictures/2-7-2-Incomplete-If-Statement.png" width=500>
