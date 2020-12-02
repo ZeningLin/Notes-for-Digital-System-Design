@@ -382,6 +382,8 @@ END LOOP 标号;
 
 
 #### 2.7.2.6 Wait Statement
+**综合器要求`WAIT`语句必须放在进程的首部或者尾部，并且一个进程中的`WAIT`语句不能超过一个**
+
 - `WAIT`
 - `WAIT ON`
   - Accept multiple signals
@@ -393,6 +395,8 @@ END LOOP 标号;
   - example: `WAIT FOR 5ns`
 
 ### 2.7.3 Attributes Statements
+
+- 使用`rising_edge(clk)`时，`clk`只能是`std_logic`
 #### 2.7.3.1 Data Attributes
 - return information regarding a `data vector`
 <img src="./pictures/2-7-3-Data-Attributes.png">
