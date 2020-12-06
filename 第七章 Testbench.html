@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Testbench</title>
+        <style>
+</style>
+        
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item { list-style-type: none; } .task-list-item-checkbox { margin-left: -20px; vertical-align: middle; }
+</style>
+        
+        
+        
+    </head>
+    <body class="vscode-body vscode-light">
+        <h1 id="testbench">Testbench</h1>
+<ul>
+<li>
+<p>考试要求：</p>
+<ol>
+<li><strong>能画出测试结果的波形</strong></li>
+<li><strong>写Testbench程序</strong></li>
+</ol>
+</li>
+<li>
+<p><s>Testbench is a kind of VHDL Program</s></p>
+</li>
+<li>
+<p><s>Procedures using testbench</s></p>
+<ul>
+<li><s>Design Under Test instantiation</s></li>
+<li><s>Stimulus generation</s></li>
+<li><s>Apply the stimulus on DUT and observe its response</s></li>
+<li><s>Compare the response with the expected result</s></li>
+</ul>
+</li>
+<li>
+<p>Non-synthesisable codes: cannot be translated to circuit, but are useful for testbench</p>
+<ul>
+<li><code>Wait</code></li>
+<li><code>While</code> Loop</li>
+<li>Infinite Loop</li>
+<li>File input/output</li>
+</ul>
+</li>
+</ul>
+<h2 id="structure-of-tenstbench">Structure of Tenstbench</h2>
+<ol>
+<li>Lib calling</li>
+<li>Package calling</li>
+<li>Entity
+<ul>
+<li><strong>the entity of testbench is empty</strong></li>
+</ul>
+</li>
+<li>Architecture
+<ol>
+<li>Component(DUT) Instantiation: Use <code>component</code> statements</li>
+<li>Signal Declaration</li>
+<li>DUT Port Mapping</li>
+<li>Stimulus Generations: Use <code>process</code> statements</li>
+</ol>
+</li>
+</ol>
+<h2 id="process-without-sensitivity-lists">Process Without Sensitivity Lists</h2>
+<ul>
+<li>A process without a sensitivity list will keep executing in a loop, but its execution can be controlled using <code>wait</code> statements</li>
+<li>The <code>wait</code> statement suspends a process for a given perios of time(limited or forever) after which the process wakes up with status where it left off</li>
+</ul>
+<h2 id="stimulus-generation">Stimulus Generation</h2>
+<h3 id="clock-signal">Clock Signal</h3>
+<ul>
+<li>Types:
+<ul>
+<li>symmetric(duty ratio = 50%)</li>
+<li>asymmetric</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-VHDL"><div><span class="hljs-keyword">SIGNAL</span> clk1,clk2: <span class="hljs-built_in">std_logic</span>;
+clk1_gen:<span class="hljs-keyword">PROCESS</span>
+    <span class="hljs-keyword">CONSTANT</span> clk_period: <span class="hljs-built_in">TIME</span>:= <span class="hljs-number">40</span> ns;
+<span class="hljs-keyword">BEGIN</span>
+    clk1 &lt;= <span class="hljs-string">&#x27;1&#x27;</span>;
+    <span class="hljs-keyword">WAIT</span> <span class="hljs-keyword">FOR</span> clk_period/<span class="hljs-number">2</span>;
+    clk1 &lt;= <span class="hljs-string">&#x27;0&#x27;</span>;
+    <span class="hljs-keyword">WAIT</span> <span class="hljs-keyword">FOR</span> clk_period/<span class="hljs-number">2</span>;
+<span class="hljs-keyword">END</span> <span class="hljs-keyword">PROCESS</span>;
+</div></code></pre>
+<h3 id="reset-signal">Reset Signal</h3>
+<pre><code class="language-VHDL"><div><span class="hljs-keyword">SIGNAL</span> reset1,reset2: <span class="hljs-built_in">std_logic</span>;
+<span class="hljs-comment">--reset1使用绝对时间，里面的时间表示绝对时刻</span>
+    reset1 &lt;= <span class="hljs-string">&#x27;0&#x27;</span>,<span class="hljs-string">&#x27;1&#x27;</span> <span class="hljs-keyword">AFTER</span> <span class="hljs-number">60</span> ns,<span class="hljs-string">&#x27;0&#x27;</span> <span class="hljs-keyword">AFTER</span> <span class="hljs-number">100</span> ns; 
+reset2_gen:<span class="hljs-keyword">PROCESS</span>
+<span class="hljs-comment">--reset2使用相对时间，里面的时间表示每一段时间的长度</span>
+<span class="hljs-keyword">BEGIN</span>                  
+   reset2 &lt;= <span class="hljs-string">&#x27;0&#x27;</span>;
+   <span class="hljs-keyword">WAIT</span> <span class="hljs-keyword">FOR</span> <span class="hljs-number">20</span> ns;
+   reset2 &lt;= <span class="hljs-string">&#x27;1&#x27;</span>;
+   <span class="hljs-keyword">WAIT</span> <span class="hljs-keyword">FOR</span> <span class="hljs-number">40</span> ns;
+   reset2 &lt;= <span class="hljs-string">&#x27;0&#x27;</span>;
+   <span class="hljs-keyword">WAIT</span>:
+<span class="hljs-keyword">END</span> <span class="hljs-keyword">PROCESS</span>;
+</div></code></pre>
+<h3 id="complex-periodic-signal">Complex Periodic Signal</h3>
+<ul>
+<li>Same as the reset signal</li>
+</ul>
+<h3 id="correlated-signals">Correlated Signals</h3>
+<ul>
+<li>Use attributes <code>delay</code></li>
+</ul>
+<pre><code class="language-VHDL"><div><span class="hljs-comment">--period2相比period1有10ns的延时</span>
+<span class="hljs-keyword">SIGNAL</span> period1,period2: <span class="hljs-built_in">std_logic</span>;
+...
+period1 &lt;= <span class="hljs-string">&#x27;0&#x27;</span>,<span class="hljs-string">&#x27;1&#x27;</span> <span class="hljs-keyword">AFTER</span> <span class="hljs-number">60</span> ns,<span class="hljs-string">&#x27;0&#x27;</span> <span class="hljs-keyword">AFTER</span> <span class="hljs-number">100</span> ns; 
+period2 &lt;= period1<span class="hljs-symbol">&#x27;delayed</span>(<span class="hljs-number">10</span>ns);
+</div></code></pre>
+<h3 id="general-stimulus">General Stimulus</h3>
+<ul>
+<li>Use <code>wait</code> and <code>process</code></li>
+<li>Aims to cover all possibilites of inputs</li>
+<li>Make use of <code>for</code> loop</li>
+</ul>
+<h3 id="typical-errors">Typical Errors</h3>
+<ul>
+<li>Assignments to the same signal in different processes are not recommended. It may introduce assignment conflicts, and cause uncertain states.</li>
+</ul>
+
+    </body>
+    </html>

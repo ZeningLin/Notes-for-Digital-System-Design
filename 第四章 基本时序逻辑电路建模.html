@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>&#x7B2C;&#x56DB;&#x7AE0; &#x57FA;&#x672C;&#x65F6;&#x5E8F;&#x903B;&#x8F91;&#x7535;&#x8DEF;&#x5EFA;&#x6A21;</title>
+        <style>
+</style>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">
+<link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item { list-style-type: none; } .task-list-item-checkbox { margin-left: -20px; vertical-align: middle; }
+</style>
+        
+        <script src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
+        
+    </head>
+    <body class="vscode-body vscode-light">
+        <h1 id="第四章-基本时序逻辑电路建模">第四章 基本时序逻辑电路建模</h1>
+<h2 id="classification-of-sequential-logic">Classification of sequential logic</h2>
+<h3 id="in-terms-of-register-actions">In terms of register actions</h3>
+<ul>
+<li>Synchronous: The register actions are triggered by clock changes only</li>
+<li>Asynchronous: Asynchronous sequential logic is not synchronized by a clock signal; the circuit output can chage directly in response to input changes</li>
+</ul>
+<h3 id="in-terms-of-output-signal">In terms of output signal</h3>
+<ul>
+<li>Mealy: the output depends on both memory state and the input</li>
+<li>Moore: The output depends on memory state only</li>
+</ul>
+<h2 id="41-锁存器latch">4.1 锁存器Latch</h2>
+<p><strong>Latch和FF的区别：Latch的敏感参数表中包含输入参数</strong></p>
+<p>Latch输入信号D的变化会影响输出Q，在时钟enable的时间内Q随D的变化而变化；FF仅在时钟边沿才会判断改变输出Q的值。二者波形有很大不同。</p>
+<h3 id="412-d-latch">4.1.2 D Latch</h3>
+<pre><code class="language-VHDL"><div><span class="hljs-keyword">LIBRARY</span> IEEE;
+<span class="hljs-keyword">USE</span> IEEE.std_logic_1164.<span class="hljs-keyword">ALL</span>;
+
+<span class="hljs-keyword">ENTITY</span> D_latch <span class="hljs-keyword">IS</span>
+    <span class="hljs-keyword">PORT</span>(
+        D,Enable: <span class="hljs-keyword">IN</span> <span class="hljs-built_in">std_logic</span>;
+        Q: <span class="hljs-keyword">OUT</span> <span class="hljs-built_in">std_logic</span>
+    );
+<span class="hljs-keyword">END</span> D_latch;
+
+<span class="hljs-keyword">ARCHITECTURE</span> behav <span class="hljs-keyword">OF</span> D_latch <span class="hljs-keyword">IS</span>
+<span class="hljs-keyword">BEGIN</span>
+    <span class="hljs-keyword">PROCESS</span> (D, Enable)
+    <span class="hljs-keyword">BEGIN</span>
+        <span class="hljs-keyword">IF</span> (Enable = <span class="hljs-string">&#x27;1&#x27;</span>) <span class="hljs-keyword">THEN</span> Q&lt;=D;
+        <span class="hljs-keyword">end</span> <span class="hljs-keyword">IF</span>;
+    <span class="hljs-keyword">END</span> <span class="hljs-keyword">PROCESS</span>             <span class="hljs-comment">-- described by incomplete if statement</span>
+<span class="hljs-keyword">END</span> behav;
+</div></code></pre>
+<hr>
+<h2 id="42-触发器flip-flop">4.2 触发器Flip-Flop</h2>
+<h3 id="421-d-ff">4.2.1 D F.F</h3>
+<pre><code class="language-VHDL"><div><span class="hljs-keyword">LIBRARY</span> IEEE;
+<span class="hljs-keyword">USE</span> IEEE.std_logic_1164.<span class="hljs-keyword">all</span>;
+
+<span class="hljs-keyword">ENTITY</span> D_FF <span class="hljs-keyword">IS</span>
+    <span class="hljs-keyword">PORT</span>(D, CLK: <span class="hljs-keyword">IN</span> <span class="hljs-built_in">std_logic</span>;
+        Q: <span class="hljs-keyword">OUT</span> <span class="hljs-built_in">std_logic</span>;)
+<span class="hljs-keyword">END</span> D_FF;
+
+<span class="hljs-keyword">ARCHITECTURE</span> behav <span class="hljs-keyword">OF</span> D_FF <span class="hljs-keyword">IS</span>
+<span class="hljs-keyword">BEGIN</span>
+    <span class="hljs-keyword">PROCESS</span>(CLK)
+    <span class="hljs-keyword">BEGIN</span><span class="hljs-comment">--------------------------多种表述方式</span>
+        <span class="hljs-keyword">IF</span> (CLK<span class="hljs-symbol">&#x27;event</span> <span class="hljs-keyword">AND</span> CLK = <span class="hljs-string">&#x27;1&#x27;</span>) <span class="hljs-keyword">THEN</span> Q&lt;=D;
+        <span class="hljs-comment">-- or</span>
+        <span class="hljs-keyword">IF</span> RISING_EDGE(CLK) <span class="hljs-keyword">THEN</span> Q&lt;=D;  <span class="hljs-comment">--can be used only if CLK is std_logic</span>
+        <span class="hljs-comment">-----------------------------</span>
+        <span class="hljs-keyword">END</span> <span class="hljs-keyword">IF</span>;
+    <span class="hljs-keyword">END</span> <span class="hljs-keyword">PROCESS</span>;
+<span class="hljs-keyword">END</span> behav;
+</div></code></pre>
+<p><strong>最常用的边沿检测表达方式</strong></p>
+<pre><code class="language-VHDL"><div><span class="hljs-comment">-- 注意这两个语句后面不能接ELSE分支</span>
+<span class="hljs-keyword">IF</span> CLK<span class="hljs-symbol">&#x27;event</span> <span class="hljs-keyword">and</span> CLK = <span class="hljs-string">&#x27;1&#x27;</span> <span class="hljs-keyword">THEN</span> <span class="hljs-comment">-- 上升沿</span>
+<span class="hljs-keyword">IF</span> CLK<span class="hljs-symbol">&#x27;event</span> <span class="hljs-keyword">and</span> CLK = <span class="hljs-string">&#x27;0&#x27;</span> <span class="hljs-keyword">THEN</span> <span class="hljs-comment">-- 下降沿</span>
+</div></code></pre>
+<h3 id="422-带有overline-q输出的d触发器"><strong>4.2.2 带有<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover accent="true"><mi>Q</mi><mo stretchy="true">‾</mo></mover></mrow><annotation encoding="application/x-tex">\overline Q</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0777700000000001em;vertical-align:-0.19444em;"></span><span class="mord overline"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8833300000000001em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord mathdefault">Q</span></span><span style="top:-3.80333em;"><span class="pstrut" style="height:3em;"></span><span class="overline-line" style="border-bottom-width:0.04em;"></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.19444em;"><span></span></span></span></span></span></span></span></span>输出的D触发器</strong></h3>
+<p>将<code>signal</code>放在process中时，有几个signal变量，仿真时就会产生几个中间节点，导致设计结果不符合要求</p>
+<p>着重参考<em>课本P73-74页例4-5</em></p>
+<ul>
+<li>使用<code>signal</code>作为中间变量时，注意Q和Qbar的赋值语句要放在<code>Process</code>结构的外面，否则将产生三个<code>signal</code>变量，导致仿真延迟不符合要求；若放在<code>Process</code>外部，则后面两个赋值语句与Process为并行关系</li>
+<li>使用<code>variable</code>做中间变量时要注意<code>variable</code> 为局部量</li>
+</ul>
+<h3 id="423-jk触发器">4.2.3 JK触发器</h3>
+<h4 id="真值表">真值表</h4>
+<table>
+<thead>
+<tr>
+<th><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>J</mi></mrow><annotation encoding="application/x-tex">J</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.09618em;">J</span></span></span></span></th>
+<th><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi></mrow><annotation encoding="application/x-tex">K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.07153em;">K</span></span></span></span></th>
+<th><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi></mrow><annotation encoding="application/x-tex">Q</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">Q</span></span></span></span></th>
+<th><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover accent="true"><mi>Q</mi><mo stretchy="true">‾</mo></mover></mrow><annotation encoding="application/x-tex">\overline{Q}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0777700000000001em;vertical-align:-0.19444em;"></span><span class="mord overline"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8833300000000001em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">Q</span></span></span><span style="top:-3.80333em;"><span class="pstrut" style="height:3em;"></span><span class="overline-line" style="border-bottom-width:0.04em;"></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.19444em;"><span></span></span></span></span></span></span></span></span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>0</td>
+<td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi></mrow><annotation encoding="application/x-tex">Q</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">Q</span></span></span></span></td>
+<td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover accent="true"><mi>Q</mi><mo stretchy="true">‾</mo></mover></mrow><annotation encoding="application/x-tex">\overline{Q}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0777700000000001em;vertical-align:-0.19444em;"></span><span class="mord overline"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8833300000000001em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">Q</span></span></span><span style="top:-3.80333em;"><span class="pstrut" style="height:3em;"></span><span class="overline-line" style="border-bottom-width:0.04em;"></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.19444em;"><span></span></span></span></span></span></span></span></span></td>
+</tr>
+<tr>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>1</td>
+<td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover accent="true"><mi>Q</mi><mo stretchy="true">‾</mo></mover></mrow><annotation encoding="application/x-tex">\overline{Q}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.0777700000000001em;vertical-align:-0.19444em;"></span><span class="mord overline"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8833300000000001em;"><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">Q</span></span></span><span style="top:-3.80333em;"><span class="pstrut" style="height:3em;"></span><span class="overline-line" style="border-bottom-width:0.04em;"></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.19444em;"><span></span></span></span></span></span></span></span></span></td>
+<td><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Q</mi></mrow><annotation encoding="application/x-tex">Q</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8777699999999999em;vertical-align:-0.19444em;"></span><span class="mord mathdefault">Q</span></span></span></span></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="43-寄存器register">4.3 寄存器Register</h2>
+<h3 id="multibit-register">Multibit Register</h3>
+<pre><code class="language-VHDL"><div><span class="hljs-keyword">LIBRARY</span> IEEE;
+<span class="hljs-keyword">USE</span> IEEE.std_logic_1164.<span class="hljs-keyword">all</span>;
+
+<span class="hljs-keyword">ENTITY</span> four_bit_reg <span class="hljs-keyword">IS</span>
+    <span class="hljs-keyword">GENERIC</span>(n:<span class="hljs-built_in">NATURAL</span>:=<span class="hljs-number">4</span>);
+    <span class="hljs-keyword">PORT</span>(D: <span class="hljs-keyword">IN</span> <span class="hljs-built_in">std_logic_vector</span>(n-<span class="hljs-number">1</span> <span class="hljs-keyword">DOWNTO</span> <span class="hljs-number">0</span>);
+    clk,rst: <span class="hljs-keyword">IN</span> <span class="hljs-built_in">std_logic</span>;
+    Q: <span class="hljs-keyword">OUT</span> <span class="hljs-built_in">std_logic_vector</span>(n-<span class="hljs-number">1</span> <span class="hljs-keyword">DOWNTO</span> <span class="hljs-number">0</span>));
+<span class="hljs-keyword">END</span> <span class="hljs-keyword">ENTITY</span> four_bit_reg;
+
+<span class="hljs-keyword">ARCHITECTURE</span> behav <span class="hljs-keyword">OF</span> four_bit_reg <span class="hljs-keyword">IS</span>
+<span class="hljs-keyword">BEGIN</span>
+    <span class="hljs-keyword">PROCESS</span>(clk,rst)
+        <span class="hljs-keyword">IF</span> rst =<span class="hljs-string">&#x27;0&#x27;</span> <span class="hljs-keyword">THEN</span>
+            Q &lt;= (<span class="hljs-keyword">OTHERS</span> =&gt;<span class="hljs-string">&#x27;0&#x27;</span>);
+        <span class="hljs-keyword">ELSIF</span> clk<span class="hljs-symbol">&#x27;event</span> <span class="hljs-keyword">AND</span> clk=<span class="hljs-string">&#x27;1&#x27;</span> <span class="hljs-keyword">THEN</span>
+            Q &lt;= D;
+        <span class="hljs-keyword">END</span> <span class="hljs-keyword">IF</span>;
+    <span class="hljs-keyword">END</span> <span class="hljs-keyword">PROCESS</span>;
+<span class="hljs-keyword">END</span> behav;
+</div></code></pre>
+<h3 id="shift-register">Shift Register</h3>
+<ul>
+<li>SISO: Serial input -serial output</li>
+<li>SIPO: Serial input –parallel output</li>
+<li>PISO: Parallel input –serial output</li>
+</ul>
+<h4 id="sipo-shift-register">SIPO shift register</h4>
+<pre><code class="language-VHDL"><div><span class="hljs-keyword">LIBRARY</span> IEEE;
+<span class="hljs-keyword">USE</span> IEEE.std_logic_1164.<span class="hljs-keyword">all</span>;
+
+<span class="hljs-keyword">ENTITY</span> sipo <span class="hljs-keyword">IS</span>
+    <span class="hljs-keyword">GENERIC</span>(n:<span class="hljs-built_in">NATURAL</span>:=<span class="hljs-number">8</span>);
+    <span class="hljs-keyword">PORT</span>(clk,a:<span class="hljs-keyword">IN</span> <span class="hljs-built_in">std_logic</span>;
+    <span class="hljs-keyword">out</span>: <span class="hljs-keyword">OUT</span> <span class="hljs-built_in">std_logic_vector</span>(n-<span class="hljs-number">1</span> <span class="hljs-keyword">DOWNTO</span> <span class="hljs-number">0</span>));
+<span class="hljs-keyword">END</span> <span class="hljs-keyword">ENTITY</span> sipo;
+
+<span class="hljs-keyword">ARCHITECTURE</span> behav <span class="hljs-keyword">OF</span> sipo <span class="hljs-keyword">IS</span>
+<span class="hljs-keyword">BEGIN</span>
+    <span class="hljs-keyword">PROCESS</span>(clk)
+        <span class="hljs-keyword">VARIABLE</span> reg:=<span class="hljs-built_in">std_logic_vector</span>(n-<span class="hljs-number">1</span> <span class="hljs-keyword">DOWNTO</span> <span class="hljs-number">0</span>);
+    <span class="hljs-keyword">BEGIN</span>
+        <span class="hljs-keyword">IF</span> clk<span class="hljs-symbol">&#x27;EVENT</span> <span class="hljs-keyword">AND</span> clk=<span class="hljs-string">&#x27;1&#x27;</span> <span class="hljs-keyword">THEN</span>
+            reg:=reg(n-<span class="hljs-number">1</span> <span class="hljs-keyword">DOWNTO</span> <span class="hljs-number">0</span>)&amp;a;
+        <span class="hljs-keyword">END</span> <span class="hljs-keyword">IF</span>;
+        <span class="hljs-keyword">out</span>&lt;=reg;
+    <span class="hljs-keyword">END</span> <span class="hljs-keyword">PROCESS</span>;
+<span class="hljs-keyword">END</span> behav;
+</div></code></pre>
+<hr>
+<h2 id="44-计数器counter">4.4 计数器Counter</h2>
+<pre><code class="language-VHDL"><div><span class="hljs-keyword">LIBRARY</span> IEEE;
+<span class="hljs-keyword">USE</span> IEEE.std_logic_1164.<span class="hljs-keyword">all</span>;
+<span class="hljs-keyword">USE</span> IEEE.std_logic_unsigned.<span class="hljs-keyword">all</span>;
+
+<span class="hljs-keyword">ENTITY</span> counter <span class="hljs-keyword">IS</span>
+    <span class="hljs-keyword">GENERIC</span>(n:<span class="hljs-built_in">NATURAL</span>:=<span class="hljs-number">8</span>);
+    <span class="hljs-keyword">PORT</span>(clk,rst:<span class="hljs-keyword">IN</span> <span class="hljs-built_in">std_logic</span>;
+    cnt: <span class="hljs-keyword">OUT</span> <span class="hljs-built_in">std_logic_vector</span>(n-<span class="hljs-number">1</span> <span class="hljs-keyword">DOWNTO</span> <span class="hljs-number">0</span>));
+<span class="hljs-keyword">END</span> <span class="hljs-keyword">ENTITY</span> counter;
+
+<span class="hljs-keyword">ARCHITECTURE</span> behav <span class="hljs-keyword">OF</span> counter <span class="hljs-keyword">IS</span>
+<span class="hljs-keyword">BEGIN</span>
+    <span class="hljs-keyword">PROCESS</span>(clk)
+        <span class="hljs-keyword">VARIABLE</span> cnt_m:=<span class="hljs-built_in">std_logic_vector</span>(n-<span class="hljs-number">1</span> <span class="hljs-keyword">DOWNTO</span> <span class="hljs-number">0</span>);
+    <span class="hljs-keyword">BEGIN</span>
+        <span class="hljs-keyword">IF</span> rst=<span class="hljs-string">&#x27;0&#x27;</span> <span class="hljs-keyword">THEN</span>
+            cnt:=(<span class="hljs-keyword">OTHERS</span>=&gt;<span class="hljs-string">&#x27;0&#x27;</span>);
+        <span class="hljs-keyword">ELSIF</span> clk<span class="hljs-symbol">&#x27;EVENT</span> <span class="hljs-keyword">AND</span> clk=<span class="hljs-string">&#x27;1&#x27;</span> <span class="hljs-keyword">THEN</span>
+            cnt=cnt+<span class="hljs-number">1</span>;
+        <span class="hljs-keyword">END</span> <span class="hljs-keyword">IF</span>;
+        cnt&lt;=cnt_m;
+    <span class="hljs-keyword">END</span> <span class="hljs-keyword">PROCESS</span>;
+<span class="hljs-keyword">END</span> behav;
+</div></code></pre>
+<hr>
+<h2 id="45-乘法器multiplier">4.5 乘法器Multiplier</h2>
+<pre><code class="language-VHDL"><div><span class="hljs-comment">-- 三位乘法器，用于进行两个三位二进制数的乘法运算</span>
+<span class="hljs-comment">-- 输出为6位二进制数</span>
+<span class="hljs-keyword">LIBRARY</span> IEEE;
+<span class="hljs-keyword">USE</span> IEEE.std_logic_1164.<span class="hljs-keyword">all</span>;
+<span class="hljs-keyword">USE</span> IEEE.std_logic_unsigned.<span class="hljs-keyword">all</span>;
+
+<span class="hljs-keyword">ENTITY</span> mul3 <span class="hljs-keyword">IS</span>
+    <span class="hljs-keyword">PORT</span>(a,b:<span class="hljs-keyword">IN</span> <span class="hljs-built_in">std_logic_vector</span>(<span class="hljs-number">2</span> <span class="hljs-keyword">DOWNTO</span> <span class="hljs-number">0</span>);
+    c: <span class="hljs-keyword">OUT</span> <span class="hljs-built_in">std_logic_vector</span>(<span class="hljs-number">5</span> <span class="hljs-keyword">DOWNTO</span> <span class="hljs-number">0</span>));
+<span class="hljs-keyword">END</span> <span class="hljs-keyword">ENTITY</span> counter;
+
+<span class="hljs-keyword">ARCHITECTURE</span> behav <span class="hljs-keyword">OF</span> mul3 <span class="hljs-keyword">IS</span>
+<span class="hljs-keyword">SIGNAL</span> temp1: <span class="hljs-built_in">std_logic_vector</span> (<span class="hljs-number">2</span> <span class="hljs-keyword">DOWNTO</span> <span class="hljs-number">0</span>);
+<span class="hljs-keyword">SIGNAL</span> temp2: <span class="hljs-built_in">std_logic_vector</span> (<span class="hljs-number">3</span> <span class="hljs-keyword">DOWNTO</span> <span class="hljs-number">0</span>);
+<span class="hljs-keyword">SIGNAL</span> temp3: <span class="hljs-built_in">std_logic_vector</span> (<span class="hljs-number">4</span> <span class="hljs-keyword">DOWNTO</span> <span class="hljs-number">0</span>);
+<span class="hljs-keyword">BEGIN</span>
+    temp1&lt;=a <span class="hljs-keyword">WHEN</span> a(<span class="hljs-number">0</span>)=<span class="hljs-string">&#x27;1&#x27;</span> <span class="hljs-keyword">ELSE</span> temp1&lt;=<span class="hljs-string">&quot;000&quot;</span>;
+    temp2&lt;=a <span class="hljs-keyword">WHEN</span> a(<span class="hljs-number">1</span>)=<span class="hljs-string">&#x27;1&#x27;</span> <span class="hljs-keyword">ELSE</span> temp2&lt;=<span class="hljs-string">&quot;0000&quot;</span>;
+    temp3&lt;=a <span class="hljs-keyword">WHEN</span> a(<span class="hljs-number">2</span>)=<span class="hljs-string">&#x27;1&#x27;</span> <span class="hljs-keyword">ELSE</span> temp3&lt;=<span class="hljs-string">&quot;00000&quot;</span>;
+    c&lt;=temp1+temp2+(<span class="hljs-string">&#x27;0&#x27;</span>&amp;temp3);
+<span class="hljs-keyword">END</span> behav;
+</div></code></pre>
+
+    </body>
+    </html>

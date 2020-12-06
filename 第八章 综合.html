@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Synthesis</title>
+        <style>
+</style>
+        
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item { list-style-type: none; } .task-list-item-checkbox { margin-left: -20px; vertical-align: middle; }
+</style>
+        
+        
+        
+    </head>
+    <body class="vscode-body vscode-light">
+        <h1 id="synthesis">Synthesis</h1>
+<h2 id="synthesis-levels">Synthesis Levels</h2>
+<ul>
+<li>hight level synthesis
+<ul>
+<li>translation from <strong>algorithmic behavior</strong> description to <strong>RTL</strong> description</li>
+<li>Input: HDL description code</li>
+<li>Results: datapath(a network including registers, function units, multiplexer, bus for data transferring), controller(including hardwared logic or firmware for controlling  the data transferring in datapath)</li>
+</ul>
+</li>
+<li>logic synthesis
+<ul>
+<li>Translation from <strong>RTL</strong> description to <strong>logic gate netlist</strong> (automatic process).</li>
+<li><s>Translation from abstract description to detailed description.</s></li>
+</ul>
+</li>
+<li>layout synthesis</li>
+</ul>
+<h1 id="vhdl-synthesis">VHDL Synthesis</h1>
+<h2 id="common-features">Common features:</h2>
+<h3 id="1-supported-subset">1) Supported subset</h3>
+<p>Supported types: <code>enumeration</code> , <code>integer</code>, <code>bit</code>, <code>std_logic</code>, <code>1darray</code><br>
+Partially supported types: <code>float</code>, <code>record</code>,<code>2darray</code></p>
+<h3 id="2-unsupported-subset">2) Unsupported subset</h3>
+<p>Types without corresponding hardware can’t be synthesized, e.g. FILE.
+Type :Time (after/wait for statement)</p>
+<h3 id="3rules-for-process-description">3）Rules for process description</h3>
+<p><s>It’s more free to write a process for simulation, but</s> <strong>for synthesis, a process includes at most one clock signal</strong>. <s>Some synthesis tools has further limitations on process description.</s></p>
+<h3 id="4synchronous-design-are-preferred">4）Synchronous design are preferred.</h3>
+<p>Synchronous description style is recommended by most of existing EDA tools, <s>the circuit states change according to the clock rhythm.</s>
+<s>For asynchronous design,  synthesis results usually need to be optimized by designer.</s></p>
+<h2 id="synthesizable-data-types">Synthesizable data types</h2>
+<p>-<strong>a) bit, boolean, bit_vector</strong></p>
+<ul>
+<li><strong>b) character, string</strong></li>
+<li><strong>c) integer</strong></li>
+<li><strong>d) std_ulogic, std_ulogic_vector, std_logic, std_logic_vector</strong></li>
+<li><strong>e) signed, unsigned</strong></li>
+</ul>
+<h3 id="enumeration-type">Enumeration type</h3>
+<ul>
+<li>For more abstract boolean and state_type, state encoding is necessary.(给enum里面的元素用二进制编号)</li>
+</ul>
+<h3 id="integer">Integer</h3>
+<ul>
+<li>synthesizable integer should <strong>have a range specification</strong></li>
+</ul>
+<h3 id="array">Array</h3>
+<ul>
+<li>1darray is usually synthesized as bus</li>
+<li>2darray can be synthesize into RAM</li>
+</ul>
+<h3 id="recordnot-supported-by-all-tools">Record(not supported by all tools)</h3>
+<ul>
+<li>Difference between array and record:
+<ul>
+<li>Array:  all elements should be of the same type.</li>
+<li>Record: elements can be of different types</li>
+</ul>
+</li>
+</ul>
+<h2 id="synthesizable-data-objects">Synthesizable data objects</h2>
+<ul>
+<li>Constant</li>
+<li>Variable</li>
+<li>Signal</li>
+<li><s>File</s></li>
+</ul>
+<p>Variable and signal has different behaviors in simulation, and they produce different results in synthesis.<strong>(P194-195,注意生成寄存器的数目)</strong></p>
+<p><s>1）Generally，<strong>better synthesis results can be obtained by making good use of variable</strong>. Because synthesis optimization can be more flexible by using variable .But not all synthesizer support variable synthesis</s></p>
+<p><s>2）By using signal in process, <strong>good consistency</strong> can be achieved in signal I/O. It is usually necessary to use a signal if an intermediate data should be hold.</s></p>
+<h3 id="初值">初值</h3>
+<p>三种赋初值的方式，见<strong>P195</strong>，建议使用第三种，即在process内部一开始就赋初值</p>
+<h2 id="synthesizable-operator">Synthesizable operator</h2>
+<h3 id="logic-operator">Logic operator</h3>
+<p>包括二元逻辑运算符如<code>and``or</code>等以及<code>not</code>操作，这些在综合的时候直接调用逻辑门单元实现，但不排除在优化时会被改动</p>
+<h3 id="relational-operator">Relational Operator</h3>
+<p>没有统一的综合方式，但可以综合</p>
+<h3 id="unary-arithmetic-operator-一元算术运算符">Unary arithmetic operator (一元算术运算符)</h3>
+<p><code>+</code> <code>-</code> 可以被综合，但是<code>abs</code>不可以</p>
+<h3 id="binary-arithmetic-operator-二元算术运算符">Binary arithmetic operator (二元算术运算符)</h3>
+<p>通常支持<code>加减乘</code>操作，部分支持<code>除</code>，取模运算一般不被支持</p>
+<h2 id="synthesizable-statements">Synthesizable Statements</h2>
+<h3 id="sequential-statements">Sequential Statements</h3>
+<h4 id="if-statements">if statements</h4>
+<ul>
+<li>if语句包含所有可能性，此时被综合为多路选择器</li>
+<li>不完整if语句会产生寄存器。如果if语句判断条件为检测某一信号的跳变，则一般综合成FF。</li>
+</ul>
+<h4 id="case-statements">case statements</h4>
+<ul>
+<li>不平衡的case语句可能也会产生寄存器，所谓不平衡是指不同case里面的操作次数不同（见下面“避免引入多于寄存器”的4）</li>
+</ul>
+<h4 id="loop-statements">loop statements</h4>
+<ul>
+<li>In RTL synthesis, <strong>the maximum number of iterations should be a finite, known and static value</strong>.</li>
+<li>P200-201两个例子，注意第二个用了<code>next</code>使得循环能够有选择性地执行</li>
+</ul>
+<h3 id="concurrent-statement">Concurrent statement</h3>
+<p>Synthesizable concurrent  statements include  process,  concurrent assignment, block statement, generate statement.</p>
+<h1 id="寄存器和锁存器的可综合描述">寄存器和锁存器的可综合描述</h1>
+<h2 id="寄存器的引入方法">寄存器的引入方法</h2>
+<h3 id="触发器的引入">触发器的引入</h3>
+<ul>
+<li>P205-207</li>
+<li>重点注意
+<ul>
+<li>方法三没有敏感参数表</li>
+<li>方法四结合敏感参数表和<code>IF</code>进行操作</li>
+<li>方法五使用的<code>WHEN...ELSE</code>语句中的<code>ELSE</code>要删掉</li>
+</ul>
+</li>
+</ul>
+<h3 id="锁存器的引入">锁存器的引入</h3>
+<ul>
+<li>P207-209</li>
+<li>与引入寄存器的区别：敏感参数表多了一个a</li>
+<li><code>CASE</code>语句的不完全覆盖也会引入寄存器（例8-20），注意<code>WHEN OTHERS=&gt;NULL</code>并不意味着完全覆盖的操作</li>
+<li>例8-21中有一个<code>BUFFER</code>类型变量的例子，要注意</li>
+</ul>
+<h3 id="具有时钟门控结构的触发器引入">具有时钟门控结构的触发器引入</h3>
+<p>例8-22这种IF语句里面有三个并列的方式不建议使用，应当改用8-23中的两个IF嵌套方式</p>
+<h3 id="同步复位置位功能引入"><s>同步复位、置位功能引入</s></h3>
+<p><s>其实就是上面的那种，课本还tm专门拎出来讲，sb</s></p>
+<h3 id="异步复位置位">异步复位、置位</h3>
+<ul>
+<li>P211例8-25
+<ul>
+<li>就是让复位操作优先级最高，给它放在检测上升沿IF语句上面就行！！</li>
+</ul>
+</li>
+<li>置位复位都要有-&gt;和上面一样的，就是多一个复位分支</li>
+</ul>
+<h2 id="避免引入多余寄存器">避免引入多余寄存器</h2>
+<ol>
+<li>将不需要进入寄存器的语句单独提出来组成一个process，以避开wait until clk'event或者不完整if的包含
+<ol>
+<li>重点看8-27和8-28</li>
+</ol>
+</li>
+<li>避免边沿触发的引入</li>
+<li>IF CASE涵盖要完整</li>
+<li>如果信号或者变量在一个CASE里面有赋值操作，那么在其他CASE里面也要有赋值操作（操作要平均）；或者在CASE语句前面统一赋初值，这样没有覆盖到的都会用初值而不需要寄存器了（例8-32）</li>
+</ol>
+
+    </body>
+    </html>

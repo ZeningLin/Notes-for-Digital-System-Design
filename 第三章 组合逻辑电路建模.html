@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>&#x7B2C;&#x4E09;&#x7AE0; &#x7EC4;&#x5408;&#x903B;&#x8F91;&#x7535;&#x8DEF;&#x5EFA;&#x6A21;</title>
+        <style>
+</style>
+        
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item { list-style-type: none; } .task-list-item-checkbox { margin-left: -20px; vertical-align: middle; }
+</style>
+        
+        
+        
+    </head>
+    <body class="vscode-body vscode-light">
+        <h1 id="第三章-组合逻辑电路建模">第三章 组合逻辑电路建模</h1>
+<h2 id="31-decoder-design">3.1 Decoder Design</h2>
+<h3 id="3-8-decoder">3-8 Decoder</h3>
+<pre><code class="language-VHDL"><div><span class="hljs-keyword">LIBRARY</span> IEEE;
+<span class="hljs-keyword">USE</span> IEEE.std_logic_1164.<span class="hljs-keyword">all</span>;
+
+<span class="hljs-keyword">ENTITY</span> decoder38 <span class="hljs-keyword">IS</span>
+    <span class="hljs-keyword">PORT</span>(a,b,c,g1,g2a,g2b: <span class="hljs-keyword">IN</span> <span class="hljs-built_in">std_logic</span>;
+        y: <span class="hljs-keyword">OUT</span> <span class="hljs-built_in">std_logic_vector</span>(<span class="hljs-number">7</span> <span class="hljs-keyword">DOWNTO</span> <span class="hljs-number">0</span>));
+<span class="hljs-keyword">END</span> decoder38;
+
+<span class="hljs-keyword">ARCHITECTURE</span> behav <span class="hljs-keyword">OF</span> decoder38 <span class="hljs-keyword">IS</span>
+    <span class="hljs-keyword">SIGNAL</span> indata: <span class="hljs-built_in">std_logic_vector</span>(<span class="hljs-number">2</span> <span class="hljs-keyword">DOWNTO</span> <span class="hljs-number">0</span>);
+<span class="hljs-keyword">BEGIN</span>
+    indata &lt;= c&amp;b&amp;a;
+    <span class="hljs-keyword">PROCESS</span> (indata, g!,g2a, g2b)
+    <span class="hljs-keyword">BEGIN</span>
+        <span class="hljs-keyword">IF</span> g1 = <span class="hljs-string">&#x27;1&#x27;</span> <span class="hljs-keyword">AND</span> g2a = <span class="hljs-string">&#x27;0&#x27;</span> <span class="hljs-keyword">AND</span> g2b = <span class="hljs-string">&#x27;0&#x27;</span> <span class="hljs-keyword">THEN</span>
+            <span class="hljs-keyword">CASE</span> indata <span class="hljs-keyword">IS</span>
+                <span class="hljs-keyword">WHEN</span> <span class="hljs-string">&quot;000&quot;</span> =&gt; Y &lt;= <span class="hljs-string">&quot;11111110&quot;</span>;  <span class="hljs-comment">-- &#x27;;&#x27; needed for seperation</span>
+                <span class="hljs-keyword">WHEN</span> <span class="hljs-string">&quot;001&quot;</span> =&gt; Y &lt;= <span class="hljs-string">&quot;11111101&quot;</span>;
+                <span class="hljs-keyword">WHEN</span> <span class="hljs-string">&quot;010&quot;</span> =&gt; Y &lt;= <span class="hljs-string">&quot;11111011&quot;</span>;
+                <span class="hljs-keyword">WHEN</span> <span class="hljs-string">&quot;011&quot;</span> =&gt; Y &lt;= <span class="hljs-string">&quot;11110111&quot;</span>;
+                <span class="hljs-keyword">WHEN</span> <span class="hljs-string">&quot;100&quot;</span> =&gt; Y &lt;= <span class="hljs-string">&quot;11101111&quot;</span>;
+                <span class="hljs-keyword">WHEN</span> <span class="hljs-string">&quot;101&quot;</span> =&gt; Y &lt;= <span class="hljs-string">&quot;11011111&quot;</span>;
+                <span class="hljs-keyword">WHEN</span> <span class="hljs-string">&quot;110&quot;</span> =&gt; Y &lt;= <span class="hljs-string">&quot;10111111&quot;</span>;
+                <span class="hljs-keyword">WHEN</span> <span class="hljs-string">&quot;111&quot;</span> =&gt; Y &lt;= <span class="hljs-string">&quot;01111111&quot;</span>;
+                <span class="hljs-keyword">WHEN</span> <span class="hljs-keyword">OTHERS</span> =&gt; Y &lt;= <span class="hljs-string">&quot;XXXXXXXX&quot;</span>; <span class="hljs-comment">--note that OTHERS should be considered</span>
+            <span class="hljs-keyword">END</span> <span class="hljs-keyword">CASE</span>;
+        <span class="hljs-keyword">ELSE</span>
+            Y&lt;= <span class="hljs-string">&quot;11111111&quot;</span>;
+        <span class="hljs-keyword">END</span> <span class="hljs-keyword">IF</span>;
+    <span class="hljs-keyword">END</span> <span class="hljs-keyword">PROCESS</span>;
+<span class="hljs-keyword">END</span> behav;
+</div></code></pre>
+<hr>
+<h2 id="32-encoder-design">3.2 Encoder Design</h2>
+<h3 id="normal-encoder">Normal Encoder</h3>
+<ul>
+<li>has the inverse form of the decoder</li>
+<li>no <code>PROCESS</code> structure needed</li>
+</ul>
+<pre><code class="language-VHDL"><div><span class="hljs-keyword">LIBRARY</span> IEEE;
+<span class="hljs-keyword">USE</span> IEEE.std_logic_1164.<span class="hljs-keyword">all</span>;
+
+<span class="hljs-keyword">ENTITY</span> encoder83 <span class="hljs-keyword">IS</span>
+    <span class="hljs-keyword">PORT</span>(x: <span class="hljs-keyword">IN</span> <span class="hljs-built_in">std_logic_vector</span>(<span class="hljs-number">7</span> <span class="hljs-keyword">DOWNTO</span> <span class="hljs-number">0</span>);
+        y: <span class="hljs-keyword">OUT</span> <span class="hljs-built_in">std_logic_vector</span>(<span class="hljs-number">2</span> <span class="hljs-keyword">DOWNTO</span> <span class="hljs-number">0</span>));
+<span class="hljs-keyword">END</span> encoder83;
+
+<span class="hljs-keyword">ARCHITECTURE</span> behav <span class="hljs-keyword">OF</span> encoder83 <span class="hljs-keyword">IS</span>
+    <span class="hljs-keyword">SIGNAL</span> indata: <span class="hljs-built_in">std_logic_vector</span>(<span class="hljs-number">2</span> <span class="hljs-keyword">DOWNTO</span> <span class="hljs-number">0</span>);
+<span class="hljs-keyword">BEGIN</span>
+    y &lt;= <span class="hljs-string">&quot;000&quot;</span> <span class="hljs-keyword">WHEN</span> x=<span class="hljs-string">&quot;00000001&quot;</span> <span class="hljs-keyword">ELSE</span>   <span class="hljs-comment">-- no &#x27;;&#x27; needed</span>
+    y &lt;= <span class="hljs-string">&quot;001&quot;</span> <span class="hljs-keyword">WHEN</span> x=<span class="hljs-string">&quot;00000010&quot;</span> <span class="hljs-keyword">ELSE</span>
+    y &lt;= <span class="hljs-string">&quot;010&quot;</span> <span class="hljs-keyword">WHEN</span> x=<span class="hljs-string">&quot;00000100&quot;</span> <span class="hljs-keyword">ELSE</span>
+    y &lt;= <span class="hljs-string">&quot;011&quot;</span> <span class="hljs-keyword">WHEN</span> x=<span class="hljs-string">&quot;00001000&quot;</span> <span class="hljs-keyword">ELSE</span>
+    y &lt;= <span class="hljs-string">&quot;100&quot;</span> <span class="hljs-keyword">WHEN</span> x=<span class="hljs-string">&quot;00010000&quot;</span> <span class="hljs-keyword">ELSE</span>
+    y &lt;= <span class="hljs-string">&quot;101&quot;</span> <span class="hljs-keyword">WHEN</span> x=<span class="hljs-string">&quot;00100000&quot;</span> <span class="hljs-keyword">ELSE</span>
+    y &lt;= <span class="hljs-string">&quot;110&quot;</span> <span class="hljs-keyword">WHEN</span> x=<span class="hljs-string">&quot;01000000&quot;</span> <span class="hljs-keyword">ELSE</span>
+    y &lt;= <span class="hljs-string">&quot;111&quot;</span> <span class="hljs-keyword">WHEN</span> x=<span class="hljs-string">&quot;10000000&quot;</span> <span class="hljs-keyword">ELSE</span>
+    <span class="hljs-string">&quot;ZZZ&quot;</span>;
+<span class="hljs-keyword">END</span> behav;
+</div></code></pre>
+<h3 id="priority-encoder">Priority Encoder</h3>
+<ul>
+<li>If multiple input signals are valid, the encoder's output corresponds to the highest priority input</li>
+</ul>
+<pre><code class="language-VHDL"><div><span class="hljs-keyword">LIBRARY</span> IEEE;
+<span class="hljs-keyword">USE</span> IEEE.std_logic_1164.<span class="hljs-keyword">all</span>;
+
+<span class="hljs-keyword">ENTITY</span> encoder83 <span class="hljs-keyword">IS</span>
+    <span class="hljs-keyword">PORT</span>(x: <span class="hljs-keyword">IN</span> <span class="hljs-built_in">std_logic_vector</span>(<span class="hljs-number">7</span> <span class="hljs-keyword">DOWNTO</span> <span class="hljs-number">0</span>);
+        y: <span class="hljs-keyword">OUT</span> <span class="hljs-built_in">std_logic_vector</span>(<span class="hljs-number">2</span> <span class="hljs-keyword">DOWNTO</span> <span class="hljs-number">0</span>));
+<span class="hljs-keyword">END</span> encoder83;
+
+<span class="hljs-keyword">ARCHITECTURE</span> behav <span class="hljs-keyword">OF</span> encoder83 <span class="hljs-keyword">IS</span>
+    <span class="hljs-keyword">SIGNAL</span> indata: <span class="hljs-built_in">std_logic_vector</span>(<span class="hljs-number">2</span> <span class="hljs-keyword">DOWNTO</span> <span class="hljs-number">0</span>);
+<span class="hljs-keyword">BEGIN</span>
+    <span class="hljs-keyword">PROCESS</span>(x)
+    <span class="hljs-keyword">BEGIN</span>
+        <span class="hljs-keyword">IF</span> X(<span class="hljs-number">0</span>) = <span class="hljs-string">&#x27;0&#x27;</span> <span class="hljs-keyword">THEN</span> y&lt;=<span class="hljs-string">&quot;111&quot;</span>;    <span class="hljs-comment">-- &#x27;;&#x27; needed for seperation</span>
+        <span class="hljs-keyword">ELSIF</span> X(<span class="hljs-number">1</span>) = <span class="hljs-string">&#x27;0&#x27;</span> <span class="hljs-keyword">THEN</span> y&lt;=<span class="hljs-string">&quot;110&quot;</span>; 
+        <span class="hljs-keyword">ELSIF</span> X(<span class="hljs-number">2</span>) = <span class="hljs-string">&#x27;0&#x27;</span> <span class="hljs-keyword">THEN</span> y&lt;=<span class="hljs-string">&quot;101&quot;</span>;
+        <span class="hljs-keyword">ELSIF</span> X(<span class="hljs-number">3</span>) = <span class="hljs-string">&#x27;0&#x27;</span> <span class="hljs-keyword">THEN</span> y&lt;=<span class="hljs-string">&quot;100&quot;</span>;
+        <span class="hljs-keyword">ELSIF</span> X(<span class="hljs-number">4</span>) = <span class="hljs-string">&#x27;0&#x27;</span> <span class="hljs-keyword">THEN</span> y&lt;=<span class="hljs-string">&quot;011&quot;</span>;
+        <span class="hljs-keyword">ELSIF</span> X(<span class="hljs-number">5</span>) = <span class="hljs-string">&#x27;0&#x27;</span> <span class="hljs-keyword">THEN</span> y&lt;=<span class="hljs-string">&quot;010&quot;</span>;
+        <span class="hljs-keyword">ELSIF</span> X(<span class="hljs-number">6</span>) = <span class="hljs-string">&#x27;0&#x27;</span> <span class="hljs-keyword">THEN</span> y&lt;=<span class="hljs-string">&quot;001&quot;</span>;
+        <span class="hljs-keyword">ELSIF</span> X(<span class="hljs-number">7</span>) = <span class="hljs-string">&#x27;0&#x27;</span> <span class="hljs-keyword">THEN</span> y&lt;=<span class="hljs-string">&quot;000&quot;</span>;
+        <span class="hljs-keyword">ELSE</span> y&lt;=<span class="hljs-string">&quot;XXX&quot;</span>;
+        <span class="hljs-keyword">END</span> <span class="hljs-keyword">IF</span>;
+    <span class="hljs-keyword">END</span> <span class="hljs-keyword">PROCESS</span>;
+<span class="hljs-keyword">END</span> behav;
+</div></code></pre>
+<hr>
+<h2 id="33-adder-design">3.3 Adder Design</h2>
+<h3 id="half-adder">Half Adder</h3>
+<pre><code class="language-VHDL"><div>sum &lt;= x <span class="hljs-keyword">XOR</span> y;
+c0 &lt;= x <span class="hljs-keyword">AND</span> y
+</div></code></pre>
+<h3 id="full-adder">Full Adder</h3>
+<pre><code class="language-VHDL"><div>sum &lt;=  x <span class="hljs-keyword">XOR</span> y <span class="hljs-keyword">XOR</span> ci;
+co &lt;= (x <span class="hljs-keyword">AND</span> y) <span class="hljs-keyword">or</span> (x <span class="hljs-keyword">AND</span> ci) <span class="hljs-keyword">or</span> (y <span class="hljs-keyword">AND</span> ci)
+</div></code></pre>
+<p>Packup as <code>COMPONENT</code></p>
+<pre><code class="language-VHDL"><div><span class="hljs-keyword">COMPONENT</span> full_adder <span class="hljs-keyword">IS</span>
+    <span class="hljs-keyword">PORT</span>(x,y,ci:<span class="hljs-keyword">IN</span> <span class="hljs-built_in">std_logic</span>;
+    sun, co: <span class="hljs-keyword">OUT</span> <span class="hljs-built_in">std_logic</span>);
+<span class="hljs-keyword">END</span> full_adder;
+</div></code></pre>
+<h3 id="sequential-4-bit-adder">Sequential 4-bit Adder</h3>
+<ul>
+<li>Use packaged component</li>
+<li>See P55</li>
+</ul>
+<h3 id="parallel-4-bit-adder">Parallel 4-bit Adder</h3>
+<ul>
+<li>See P56</li>
+<li>higher speed than sequential adder</li>
+<li>needs more logic resources than sequential adder</li>
+<li><strong>For 4-bit adder, parallel adder consumes almost the same as the sequential one</strong></li>
+</ul>
+<hr>
+<h2 id="34-multiplexermux">3.4 Multiplexer(MUX)</h2>
+<p>-See <code>P58</code> or <code>PPT.4.Combinational Logic using VHDL by Q. P48</code></p>
+<hr>
+<h2 id="35-complement-operation">3.5 Complement Operation</h2>
+<pre><code class="language-VHDL"><div><span class="hljs-keyword">USE</span> IEEE.std_logic_unsigned.<span class="hljs-keyword">all</span>;
+...
+<span class="hljs-keyword">out</span> &lt;= <span class="hljs-keyword">not</span> input + <span class="hljs-string">&#x27;1&#x27;</span>;
+</div></code></pre>
+<hr>
+<h2 id="36-tri-state-gate">3.6 Tri-state Gate</h2>
+<ul>
+<li>Output: '0','1','Z'</li>
+<li>Use <code>en</code> to control the output, when <code>en = '0</code> then <code>out &lt;= 'Z'</code></li>
+</ul>
+<pre><code class="language-VHDL"><div><span class="hljs-keyword">PROCESS</span>(<span class="hljs-keyword">in</span>, en)
+<span class="hljs-keyword">BEGIN</span>
+    <span class="hljs-keyword">IF</span> en=<span class="hljs-string">&#x27;1&#x27;</span> <span class="hljs-keyword">THEN</span>
+        <span class="hljs-keyword">out</span> &lt;= <span class="hljs-keyword">in</span>;
+    <span class="hljs-keyword">ELSE</span>
+        <span class="hljs-keyword">out</span> &lt;= <span class="hljs-string">&#x27;z&#x27;</span>;
+    <span class="hljs-keyword">END</span> <span class="hljs-keyword">IF</span>;
+<span class="hljs-keyword">END</span> <span class="hljs-keyword">PROCESS</span>;
+</div></code></pre>
+<hr>
+<h2 id="37-buffer">3.7 Buffer</h2>
+<h3 id="inputoutput-buffer">INPUT/OUTPUT Buffer</h3>
+<ul>
+<li>See <code>P62</code></li>
+</ul>
+<h3 id="bi-directional-bus-buffer">Bi-directional Bus Buffer</h3>
+<pre><code class="language-VHDL"><div><span class="hljs-keyword">LIBRARY</span> IEEE;
+<span class="hljs-keyword">USE</span> IEEE.std_logic_.<span class="hljs-keyword">all</span>;
+
+<span class="hljs-keyword">ENTITY</span> tri_bigate <span class="hljs-keyword">IS</span>
+    <span class="hljs-keyword">PORT</span>(a,b:<span class="hljs-keyword">INOUT</span> <span class="hljs-built_in">std_logic_vector</span>(<span class="hljs-number">7</span> <span class="hljs-keyword">DOWNTO</span> <span class="hljs-number">0</span>);
+    en,dr:<span class="hljs-keyword">IN</span> <span class="hljs-built_in">std_logic</span>);
+<span class="hljs-keyword">END</span> tri_bigate;
+
+<span class="hljs-keyword">ARCHITECTURE</span> behav <span class="hljs-keyword">OF</span> tri_bigate <span class="hljs-keyword">IS</span>
+    <span class="hljs-keyword">SIGNAL</span> aout, bout: <span class="hljs-built_in">std_logic_vector</span>(<span class="hljs-number">7</span> <span class="hljs-keyword">DOWNTO</span> <span class="hljs-number">7</span>)
+    <span class="hljs-keyword">BEGIN</span>
+    <span class="hljs-keyword">PROCESS</span>(a,dr,en,bout)
+    <span class="hljs-keyword">BEGIN</span>
+    <span class="hljs-keyword">IF</span> (en=<span class="hljs-string">&#x27;0&#x27;</span>) <span class="hljs-keyword">AND</span> (dr=<span class="hljs-string">&#x27;1&#x27;</span>) <span class="hljs-keyword">THEN</span>
+        bout&lt;=a;
+    <span class="hljs-keyword">ELSE</span> bout &lt;=<span class="hljs-string">&quot;ZZZZZZZZ&quot;</span>;
+    <span class="hljs-keyword">END</span> <span class="hljs-keyword">IF</span>;
+    b&lt;=bout;
+    <span class="hljs-keyword">END</span> <span class="hljs-keyword">PROCESS</span>;
+    <span class="hljs-keyword">PROCESS</span>(b,dr,en,bout)
+    <span class="hljs-keyword">BEGIN</span>
+    <span class="hljs-keyword">IF</span> (en=<span class="hljs-string">&#x27;0&#x27;</span>) <span class="hljs-keyword">AND</span> (dr=<span class="hljs-string">&#x27;0&#x27;</span>) <span class="hljs-keyword">THEN</span>
+        aout&lt;=b;
+    <span class="hljs-keyword">ELSE</span> aout &lt;=<span class="hljs-string">&quot;ZZZZZZZZ&quot;</span>;
+    <span class="hljs-keyword">END</span> <span class="hljs-keyword">IF</span>;
+    a&lt;=bout;
+    <span class="hljs-keyword">END</span> <span class="hljs-keyword">PROCESS</span>;
+<span class="hljs-keyword">END</span> behav;
+</div></code></pre>
+<h2 id="38-comparator">3.8 Comparator</h2>
+<h2 id="39-romram">3.9 ROM/RAM</h2>
+
+    </body>
+    </html>
