@@ -159,7 +159,7 @@ VARIABLE variable_name:dtype:=value
 - **resolved logic system**: if any two std_logic signals are connected to the same node, then conflicting logic levels are automatically resolved according to the rules
 - Attention: **case-sensitive** , e.g. High impedance is represented by **‘Z’** rather than ‘z’ .
 
-  <img src="./pictures/2-5-2-Resolved-Logic-System.png" />
+  <img src=".//pictures/2-5-2-Resolved-Logic-System.png" />
 
 #### std_logic_vector
 - no extrapackage required
