@@ -144,6 +144,14 @@
 <li><code>SIGNAL</code>除了值以外还存放了历史信息、波形值等，可用于仿真，但是<code>VARIABLE</code>不可以仿真</li>
 <li><code>PROCESS</code>只对信号敏感，不对变量敏感</li>
 </ul>
+<h4 id="信号与变量的比较考试答案版">信号与变量的比较（考试答案版）</h4>
+<ol>
+<li>声明形式与赋值符号不同。</li>
+<li>有效域不同。信号在结构体内、进程外定义，变量在进程内定义。信号有效域为整个结构体，可在不同进程中传递数值；变量的有效域是定义该变量的进程。</li>
+<li>赋值操作的执行不同。变量赋值是立即生效，在执行下一条语句是，该变量的值为上一句新赋的值；信号赋值具有延时性，信号的赋值语句即使被执行也不会使信号立即发生代入，下一条语句执行时，仍使用原来的信号值（信号是在进程挂起时发生代入）。</li>
+<li>对应硬件结构不同。信号对应实际电路的某个节点或信号线；变量是一个抽象值，它不与任何实际电路连线对应。注意：变量不与任何实际电路连线对应，不代表变量赋值行为不产生与之对应的硬件结构。变量赋值语句既然是可综合的，就一定会对硬件结构产生影响。</li>
+<li>应用场合不同。在实际应用中，信号的行为更接近硬件的实际情况，因此更多地使用信号进行电路内部数据传递，只在描述一些用信号很难描述的算法时才用到变量。变量用于进程语句和子程序中中间的数据存储。</li>
+</ol>
 <hr>
 <h2 id="25-vhdl数据类型">2.5 VHDL数据类型</h2>
 <h3 id="251-standard-datatype">2.5.1 Standard Datatype</h3>
@@ -218,7 +226,7 @@
 </li>
 <li>
 <p>Attention: <strong>case-sensitive</strong> , e.g. High impedance is represented by <strong>‘Z’</strong> rather than ‘z’ .</p>
-<img src="file:///c:\Users\Zening Lin\OneDrive\SCUT\Professional Courses\Digital System Design\Notes for Digital System Design\pictures\2-5-2-Resolved-Logic-System.png" />
+<img src="file:///c:\Users\Zening Lin\OneDrive\SCUT\Professional Courses\Digital System Design\Notes for Digital System Design\markdown\pictures\2-5-2-Resolved-Logic-System.png" />
 </li>
 </ul>
 <h4 id="std_logic_vector">std_logic_vector</h4>
@@ -295,7 +303,7 @@
 </li>
 </ul>
 <h3 id="254-data-conversion">2.5.4 Data Conversion</h3>
-<img src="file:///c:\Users\Zening Lin\OneDrive\SCUT\Professional Courses\Digital System Design\Notes for Digital System Design\pictures\2-5-4-Data-Conversion.png" width="500" height="260"/>
+<img src="file:///c:\Users\Zening Lin\OneDrive\SCUT\Professional Courses\Digital System Design\Notes for Digital System Design\markdown\pictures\2-5-4-Data-Conversion.png" width="500" height="260"/>
 <hr>
 <h2 id="26-vhdl运算符">2.6 VHDL运算符</h2>
 <h3 id="261-算术运算符">2.6.1 算术运算符</h3>
@@ -357,6 +365,8 @@
 <span class="hljs-keyword">END</span> <span class="hljs-keyword">COMPONENT</span>;
 
 <span class="hljs-comment">------------------------ 调用方式 -------------------------</span>
+<span class="hljs-keyword">USE</span> work.components.<span class="hljs-keyword">all</span>;
+
 object_name: component_name <span class="hljs-keyword">GENERIC</span> <span class="hljs-keyword">MAP</span>(...); <span class="hljs-comment">--写入例化的类属参数</span>
                             <span class="hljs-keyword">PORT</span> <span class="hljs-keyword">MAP</span>(...);  <span class="hljs-comment">--写入端口映射</span>
 </div></code></pre>
@@ -369,6 +379,7 @@ object_name: component_name <span class="hljs-keyword">GENERIC</span> <span clas
 </ul>
 </li>
 </ul>
+<p>实例见P54-55加法器的封装</p>
 <h4 id="2714-generate-statement">2.7.1.4 Generate Statement</h4>
 <h5 id="for-generate">For Generate</h5>
 <pre><code class="language-VHDL"><div><span class="hljs-comment">---------For Generate--------</span>
@@ -418,7 +429,7 @@ object_name: component_name <span class="hljs-keyword">GENERIC</span> <span clas
 </li>
 <li>
 <p><strong>Incomplete <code>if</code> statement (without <code>else</code> part) may introduce register: the sequential logic and combinational logic are mixed in the same process (introduce combinational logic in sequential logic or introduce sequential logic in combinational logic), unwanted register may be introduced.</strong><br>
-<img src="file:///c:\Users\Zening Lin\OneDrive\SCUT\Professional Courses\Digital System Design\Notes for Digital System Design\pictures\2-7-2-Incomplete-If-Statement.png" width=500></p>
+<img src="file:///c:\Users\Zening Lin\OneDrive\SCUT\Professional Courses\Digital System Design\Notes for Digital System Design\markdown\pictures\2-7-2-Incomplete-If-Statement.png" width=500></p>
 </li>
 </ul>
 <h4 id="2722-case-statements">2.7.2.2 Case Statements</h4>
@@ -497,12 +508,12 @@ object_name: component_name <span class="hljs-keyword">GENERIC</span> <span clas
 <h4 id="2731-data-attributes">2.7.3.1 Data Attributes</h4>
 <ul>
 <li>return information regarding a <code>data vector</code>
-<img src="file:///c:\Users\Zening Lin\OneDrive\SCUT\Professional Courses\Digital System Design\Notes for Digital System Design\pictures\2-7-3-Data-Attributes.png"></li>
+<img src="file:///c:\Users\Zening Lin\OneDrive\SCUT\Professional Courses\Digital System Design\Notes for Digital System Design\markdown\pictures\2-7-3-Data-Attributes.png"></li>
 </ul>
 <h4 id="2731-signal-attributes">2.7.3.1 Signal Attributes</h4>
 <ul>
 <li>serve to monitor a signal (return <code>TRUE</code> or <code>FALSE</code>)
-<img src="file:///c:\Users\Zening Lin\OneDrive\SCUT\Professional Courses\Digital System Design\Notes for Digital System Design\pictures\2-7-3-Signal-Attributes.png"></li>
+<img src="file:///c:\Users\Zening Lin\OneDrive\SCUT\Professional Courses\Digital System Design\Notes for Digital System Design\markdown\pictures\2-7-3-Signal-Attributes.png"></li>
 </ul>
 <hr>
 <h2 id="28-测试基准">2.8 测试基准</h2>
