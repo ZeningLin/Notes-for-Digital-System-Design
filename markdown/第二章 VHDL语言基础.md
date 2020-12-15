@@ -255,6 +255,9 @@ TYPE Type_name IS Type_def;
 
 ----
 ## 2.7 VHDL基本语句
+
+- `NULL`为顺序语句中的用法，`unaffected`为并行语句的用法，两者均表示没有操作
+
 ### 2.7.1 Concurrent Statements
 #### 2.7.1.1 When...else Statement
 ```VHDL
