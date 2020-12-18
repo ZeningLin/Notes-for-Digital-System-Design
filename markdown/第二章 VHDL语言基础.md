@@ -100,6 +100,8 @@ VARIABLE variable_name:dtype:=value
 - `SIGNAL`是global量，可在多个`PROCESS`中传递，但是`VARIABLE`是local量，仅在当前的进程、子程序中有效
 - `SIGNAL`除了值以外还存放了历史信息、波形值等，可用于仿真，但是`VARIABLE`不可以仿真
 - `PROCESS`只对信号敏感，不对变量敏感
+- 变量不与任何实际电路连线对应，不代表变量赋值行为不产生与之对应的硬件结构。变量赋值语句既然是可综合的，就一定会对硬件结构产生影响。
+
 
 #### 信号与变量的比较（考试答案版）
 1. 声明形式与赋值符号不同。
@@ -346,7 +348,7 @@ ELSE
 END IF;
 ```
 - 每一个condition必须为boolean类型，可以为signal, constant, variable
-- If statements are sythesised using **multiplexers**
+- If statements are sythesised using **multiplexers**。综合器用多路选择器或基本逻辑门的组合来实现电路。用多路选择器实现电路时，if…elsif…else中隐含的优先关系会被消去，这是设计师应该注意的问题。
 
 - **Incomplete `if` statement (without `else` part) may introduce register: the sequential logic and combinational logic are mixed in the same process (introduce combinational logic in sequential logic or introduce sequential logic in combinational logic), unwanted register may be introduced.**  
 <img src="./pictures/2-7-2-Incomplete-If-Statement.png" width=500>
