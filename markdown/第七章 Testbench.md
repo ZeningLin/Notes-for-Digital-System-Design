@@ -30,7 +30,7 @@
 
 ## Process Without Sensitivity Lists
 - A process without a sensitivity list will keep executing in a loop, but its execution can be controlled using `wait` statements
-- The `wait` statement suspends a process for a given perios of time(limited or forever) after which the process wakes up with status where it left off
+- The `wait` statement suspends a process for a given periods of time(limited or forever) after which the process wakes up with status where it left off
 
 ## Stimulus Generation
 ### Clock Signal
@@ -48,14 +48,17 @@ BEGIN
     WAIT FOR clk_period/2;
 END PROCESS;
 ```
+-复习2
+ppt130并行语句产生多种信号，注意初值指定方式
+
 
 ### Reset Signal
 ```VHDL
 SIGNAL reset1,reset2: std_logic;
 --reset1使用绝对时间，里面的时间表示绝对时刻
     reset1 <= '0','1' AFTER 60 ns,'0' AFTER 100 ns; 
-reset2_gen:PROCESS
 --reset2使用相对时间，里面的时间表示每一段时间的长度
+reset2_gen:PROCESS
 BEGIN                  
    reset2 <= '0';
    WAIT FOR 20 ns;
@@ -82,7 +85,7 @@ period2 <= period1'delayed(10ns);
 ### General Stimulus
 - Use `wait` and `process`
 - Aims to cover all possibilites of inputs
-- Make use of `for` loop
+- Make use of `for` loop复习2p138
 
 
 ### Typical Errors
