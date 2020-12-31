@@ -5,7 +5,8 @@
         <title>Synthesis</title>
         <style>
 </style>
-        
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">
+<link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
 <style>
@@ -19,7 +20,7 @@
 .task-list-item { list-style-type: none; } .task-list-item-checkbox { margin-left: -20px; vertical-align: middle; }
 </style>
         
-        
+        <script src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
         
     </head>
     <body class="vscode-body vscode-light">
@@ -40,6 +41,29 @@
 </ul>
 </li>
 <li>layout synthesis</li>
+</ul>
+<h1 id="constrains">Constrains</h1>
+<p>用于综合的约束可以用用户定义属性来表示。用户定义只是用于给综合工具传递约束信息，仿真时被忽略。</p>
+<pre><code class="language-VHDL"><div><span class="hljs-keyword">attribute</span>  属性名 ： 数据类型 ；
+<span class="hljs-keyword">attribute</span>  属性名  <span class="hljs-keyword">of</span>  对象名 ：对象类型  <span class="hljs-keyword">is</span>  值；
+</div></code></pre>
+<h2 id="约束种类">约束种类</h2>
+<ul>
+<li>资源约束
+<ul>
+<li>基本元件的种类个数</li>
+</ul>
+</li>
+<li>时间约束
+<ul>
+<li>假定一个时序系统工作在20MHZ的时钟频率，那么通过状态寄存器和状态产生逻辑的最大延迟不能超过50ns（20MHZ的倒数）。</li>
+<li>状态机编码约束
+<ul>
+<li>自然二进制，格雷码，onehot</li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 <h1 id="vhdl-synthesis">VHDL Synthesis</h1>
 <h2 id="common-features">Common features:</h2>
@@ -91,6 +115,7 @@ Type :Time (after/wait for statement)</p>
 <li>Signal</li>
 <li><s>File</s></li>
 </ul>
+<p>注意并非所有综合器都支持变量综合</p>
 <p>Variable and signal has different behaviors in simulation, and they produce different results in synthesis.<strong>(P194-195,注意生成寄存器的数目)</strong></p>
 <p><s>1）Generally，<strong>better synthesis results can be obtained by making good use of variable</strong>. Because synthesis optimization can be more flexible by using variable .But not all synthesizer support variable synthesis</s></p>
 <p><s>2）By using signal in process, <strong>good consistency</strong> can be achieved in signal I/O. It is usually necessary to use a signal if an intermediate data should be hold.</s></p>
@@ -167,6 +192,59 @@ Type :Time (after/wait for statement)</p>
 <li>IF CASE涵盖要完整</li>
 <li>如果信号或者变量在一个CASE里面有赋值操作，那么在其他CASE里面也要有赋值操作（操作要平均）；或者在CASE语句前面统一赋初值，这样没有覆盖到的都会用初值而不需要寄存器了（例8-32）</li>
 </ol>
+<h1 id="优化">优化</h1>
+<p>优化的两个方面：</p>
+<ul>
+<li>速率优化
+<ul>
+<li>流水线优化：拆分为若干个过程，每个过程并行运行</li>
+<li>合理使用嵌入式阵列块EAB资源和LPM宏单元库来提高乘法器速度</li>
+<li>关键路径优化：关键路径指<strong>输入到输出延时最长的逻辑通道</strong></li>
+</ul>
+</li>
+<li>面积优化
+<ul>
+<li>资源共享：通过数据缓冲或多路选择的方法来共享数据通道中占用资源较多的模块（如乘法器、多位加法器等算术模块）（如两乘法器一选择，变为一选择一乘法）</li>
+</ul>
+</li>
+</ul>
+<h2 id="针对传输延时的要求要会计算">针对传输延时的要求(要会计算！！)</h2>
+<ul>
+<li>一个时钟周期的最坏情况为<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi><mo>=</mo><msub><mi>T</mi><mrow><mi>c</mi><mi>l</mi><mi>k</mi></mrow></msub><mo>+</mo><mi>δ</mi><mo>+</mo><msub><mi>t</mi><mrow><mi>j</mi><mi>i</mi><mi>t</mi><mi>t</mi><mi>e</mi><mi>r</mi></mrow></msub></mrow><annotation encoding="application/x-tex">T = T_{clk}+\delta+t_{jitter}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">c</span><span class="mord mathdefault mtight" style="margin-right:0.01968em;">l</span><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.77777em;vertical-align:-0.08333em;"></span><span class="mord mathdefault" style="margin-right:0.03785em;">δ</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.9011879999999999em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathdefault">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.05724em;">j</span><span class="mord mathdefault mtight">i</span><span class="mord mathdefault mtight">t</span><span class="mord mathdefault mtight">t</span><span class="mord mathdefault mtight">e</span><span class="mord mathdefault mtight" style="margin-right:0.02778em;">r</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span></span></span></span></li>
+<li>传输所需要的最短时间为<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mrow><mi>d</mi><mi>e</mi><mi>l</mi><mi>a</mi><mi>y</mi></mrow></msub><mo>=</mo><msub><mi>t</mi><mrow><mi>s</mi><mi>u</mi></mrow></msub><mo>+</mo><msub><mi>t</mi><mrow><mi>c</mi><mo>−</mo><mi>q</mi></mrow></msub><mo>+</mo><msub><mi>t</mi><mrow><mi>p</mi><mi>l</mi><mi>o</mi><mi>g</mi><mi>i</mi><mi>c</mi></mrow></msub></mrow><annotation encoding="application/x-tex">T_{delay} = t_{su} + t_{c-q}+t_{plogic}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.969438em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361079999999999em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">d</span><span class="mord mathdefault mtight">e</span><span class="mord mathdefault mtight" style="margin-right:0.01968em;">l</span><span class="mord mathdefault mtight">a</span><span class="mord mathdefault mtight" style="margin-right:0.03588em;">y</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.76508em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">s</span><span class="mord mathdefault mtight">u</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.9011879999999999em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathdefault">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.25833100000000003em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">c</span><span class="mbin mtight">−</span><span class="mord mathdefault mtight" style="margin-right:0.03588em;">q</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.9011879999999999em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathdefault">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361079999999999em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">p</span><span class="mord mathdefault mtight" style="margin-right:0.01968em;">l</span><span class="mord mathdefault mtight">o</span><span class="mord mathdefault mtight" style="margin-right:0.03588em;">g</span><span class="mord mathdefault mtight">i</span><span class="mord mathdefault mtight">c</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span></span></span></span></li>
+<li><strong>结合起来应有<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>T</mi><mrow><mi>c</mi><mi>l</mi><mi>k</mi></mrow></msub><mo>+</mo><mi>δ</mi><mo>+</mo><msub><mi>t</mi><mrow><mi>j</mi><mi>i</mi><mi>t</mi><mi>t</mi><mi>e</mi><mi>r</mi></mrow></msub><mo>&gt;</mo><msub><mi>t</mi><mrow><mi>s</mi><mi>u</mi></mrow></msub><mo>+</mo><msub><mi>t</mi><mrow><mi>c</mi><mo>−</mo><mi>q</mi></mrow></msub><mo>+</mo><msub><mi>t</mi><mrow><mi>p</mi><mi>l</mi><mi>o</mi><mi>g</mi><mi>i</mi><mi>c</mi></mrow></msub></mrow><annotation encoding="application/x-tex">T_{clk}+\delta+t_{jitter} \gt t_{su} + t_{c-q}+t_{plogic}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:-0.13889em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">c</span><span class="mord mathdefault mtight" style="margin-right:0.01968em;">l</span><span class="mord mathdefault mtight" style="margin-right:0.03148em;">k</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.77777em;vertical-align:-0.08333em;"></span><span class="mord mathdefault" style="margin-right:0.03785em;">δ</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.9011879999999999em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathdefault">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.311664em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight" style="margin-right:0.05724em;">j</span><span class="mord mathdefault mtight">i</span><span class="mord mathdefault mtight">t</span><span class="mord mathdefault mtight">t</span><span class="mord mathdefault mtight">e</span><span class="mord mathdefault mtight" style="margin-right:0.02778em;">r</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">&gt;</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.76508em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathdefault">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.151392em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">s</span><span class="mord mathdefault mtight">u</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.9011879999999999em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathdefault">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.25833100000000003em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">c</span><span class="mbin mtight">−</span><span class="mord mathdefault mtight" style="margin-right:0.03588em;">q</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.9011879999999999em;vertical-align:-0.286108em;"></span><span class="mord"><span class="mord mathdefault">t</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361079999999999em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathdefault mtight">p</span><span class="mord mathdefault mtight" style="margin-right:0.01968em;">l</span><span class="mord mathdefault mtight">o</span><span class="mord mathdefault mtight" style="margin-right:0.03588em;">g</span><span class="mord mathdefault mtight">i</span><span class="mord mathdefault mtight">c</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.286108em;"><span></span></span></span></span></span></span></span></span></span></strong></li>
+</ul>
+<h3 id="惯性延时固有延时">惯性延时（固有延时）</h3>
+<ul>
+<li>信号脉宽小于器件的惯性延时，器件对输入信号不做任何反应</li>
+<li>对应语句<code>z &lt;= x after 5ns</code></li>
+</ul>
+<h3 id="传输延时">传输延时</h3>
+<ul>
+<li>不考虑信号的脉宽，仅仅表现为普通的延时</li>
+<li>对应语句<code>z &lt;= TRANSPORT x after 5ns</code></li>
+</ul>
+<h2 id="提高综合效率的策略">提高综合效率的策略</h2>
+<ol>
+<li>尽量不使用WAIT FOR XX ns语句和AFTER XX ns语句。XX ns表明在执行下一操作之前需要等待的时间，但综合器不予支持，一般忽略该时间，而不会综合成某种元件，故对于包含此类语句的程序，仿真结果与综合结果往往不一致。</li>
+<li>声明信号和变量时尽量不赋初值，定义某确定数值时，使用常量而不用变量赋初值的形式。因为大多数综合工具将忽略赋值等初始化语句</li>
+<li>函数或过程调用时尽量使用名称关联。不要在同一个语句中同时使用两种关联。</li>
+</ol>
+<pre><code class="language-VHDL"><div>clk_1:bufes <span class="hljs-keyword">port</span> <span class="hljs-keyword">map</span>（I=&gt;clock_in，clock_out）；<span class="hljs-comment">--(不正确的用法)</span>
+clk_1:bufes <span class="hljs-keyword">port</span> <span class="hljs-keyword">map</span>（I=&gt;clock_in，O=&gt;clock_out）；<span class="hljs-comment">--(正确的用法) </span>
+</div></code></pre>
+<ol start="4">
+<li>正确使用when_else语句、if_else语句和case语句，条件涵盖要完整，防止产生不必要的寄存器</li>
+<li>注意算术功能的设计优化。</li>
+</ol>
+<pre><code class="language-VHDL"><div><span class="hljs-keyword">Out</span>&lt;=A+B+C+D;
+<span class="hljs-keyword">Out</span>&lt;=(A+B)+(C+D);
+<span class="hljs-comment">--第一条语句综合后将会连续叠放3个加法器（（（A+B）+C）+D）；第二条语句（A+B）和（C+D）使用两个并行的加法器，同时进行加法运算，再将运算结果通过第三个加法器进行组合。虽然使用资源数量相同，但第二条语句速度更快。</span>
+</div></code></pre>
+<ul>
+<li>在进程中, 对变量要先读后写。
+因为变量值是立即获得的, 如果先写后读就会产生长的组合逻辑和锁存器。因此, 在编写代码时, 对变量要先读后写.</li>
+</ul>
 
     </body>
     </html>
