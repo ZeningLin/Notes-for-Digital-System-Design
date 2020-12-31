@@ -75,7 +75,7 @@
 <h2 id="process-without-sensitivity-lists">Process Without Sensitivity Lists</h2>
 <ul>
 <li>A process without a sensitivity list will keep executing in a loop, but its execution can be controlled using <code>wait</code> statements</li>
-<li>The <code>wait</code> statement suspends a process for a given perios of time(limited or forever) after which the process wakes up with status where it left off</li>
+<li>The <code>wait</code> statement suspends a process for a given periods of time(limited or forever) after which the process wakes up with status where it left off</li>
 </ul>
 <h2 id="stimulus-generation">Stimulus Generation</h2>
 <h3 id="clock-signal">Clock Signal</h3>
@@ -97,12 +97,14 @@ clk1_gen:<span class="hljs-keyword">PROCESS</span>
     <span class="hljs-keyword">WAIT</span> <span class="hljs-keyword">FOR</span> clk_period/<span class="hljs-number">2</span>;
 <span class="hljs-keyword">END</span> <span class="hljs-keyword">PROCESS</span>;
 </div></code></pre>
+<p>-复习2
+ppt130并行语句产生多种信号，注意初值指定方式</p>
 <h3 id="reset-signal">Reset Signal</h3>
 <pre><code class="language-VHDL"><div><span class="hljs-keyword">SIGNAL</span> reset1,reset2: <span class="hljs-built_in">std_logic</span>;
 <span class="hljs-comment">--reset1使用绝对时间，里面的时间表示绝对时刻</span>
     reset1 &lt;= <span class="hljs-string">&#x27;0&#x27;</span>,<span class="hljs-string">&#x27;1&#x27;</span> <span class="hljs-keyword">AFTER</span> <span class="hljs-number">60</span> ns,<span class="hljs-string">&#x27;0&#x27;</span> <span class="hljs-keyword">AFTER</span> <span class="hljs-number">100</span> ns; 
-reset2_gen:<span class="hljs-keyword">PROCESS</span>
 <span class="hljs-comment">--reset2使用相对时间，里面的时间表示每一段时间的长度</span>
+reset2_gen:<span class="hljs-keyword">PROCESS</span>
 <span class="hljs-keyword">BEGIN</span>                  
    reset2 &lt;= <span class="hljs-string">&#x27;0&#x27;</span>;
    <span class="hljs-keyword">WAIT</span> <span class="hljs-keyword">FOR</span> <span class="hljs-number">20</span> ns;
@@ -130,7 +132,7 @@ period2 &lt;= period1<span class="hljs-symbol">&#x27;delayed</span>(<span class=
 <ul>
 <li>Use <code>wait</code> and <code>process</code></li>
 <li>Aims to cover all possibilites of inputs</li>
-<li>Make use of <code>for</code> loop</li>
+<li>Make use of <code>for</code> loop复习2p138</li>
 </ul>
 <h3 id="typical-errors">Typical Errors</h3>
 <ul>

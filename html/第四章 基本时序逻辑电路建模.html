@@ -39,6 +39,36 @@
 <h2 id="41-锁存器latch">4.1 锁存器Latch</h2>
 <p><strong>Latch和FF的区别：Latch的敏感参数表中包含输入参数</strong></p>
 <p>Latch输入信号D的变化会影响输出Q，在时钟enable的时间内Q随D的变化而变化；FF仅在时钟边沿才会判断改变输出Q的值。二者波形有很大不同。</p>
+<h3 id="411-rs-latch">4.1.1 RS latch</h3>
+<p>真值表见课本P67</p>
+<p><strong>RTL图要记住！！</strong></p>
+<pre><code class="language-VHDL"><div><span class="hljs-keyword">library</span> ieee;
+<span class="hljs-keyword">use</span> ieee.std_logic_1164.<span class="hljs-keyword">all</span>;
+
+<span class="hljs-keyword">entity</span> rs_latch <span class="hljs-keyword">is</span>
+    <span class="hljs-keyword">port</span>(R,S: <span class="hljs-keyword">in</span> <span class="hljs-built_in">std_logic</span>;
+    Q,Qbar: <span class="hljs-keyword">out</span> <span class="hljs-built_in">std_logic</span>);
+<span class="hljs-keyword">end</span> <span class="hljs-keyword">entity</span> rs_latch;
+
+<span class="hljs-keyword">architecture</span> behav <span class="hljs-keyword">of</span> rs_latch <span class="hljs-keyword">is</span>
+<span class="hljs-keyword">begin</span>
+    <span class="hljs-keyword">process</span>(R,S)
+        <span class="hljs-keyword">variable</span> rs: <span class="hljs-built_in">std_logic_vector</span>(<span class="hljs-number">1</span> <span class="hljs-keyword">downto</span> <span class="hljs-number">0</span>);
+    <span class="hljs-keyword">begin</span>
+        rs:=R&amp;S;
+        <span class="hljs-keyword">case</span> rs <span class="hljs-keyword">is</span>
+            <span class="hljs-keyword">when</span> <span class="hljs-string">&quot;00&quot;</span>=&gt;
+                Q&lt;=<span class="hljs-number">1</span>;Qbar&lt;=<span class="hljs-number">1</span>;
+            <span class="hljs-keyword">when</span> <span class="hljs-string">&quot;01&quot;</span>=&gt;
+                Q&lt;=<span class="hljs-number">0</span>;Qbar&lt;=<span class="hljs-number">1</span>;
+            <span class="hljs-keyword">when</span> <span class="hljs-string">&quot;10&quot;</span>=&gt;
+                Q&lt;=<span class="hljs-number">1</span>;Qbar&lt;=<span class="hljs-number">0</span>;
+            <span class="hljs-keyword">when</span> <span class="hljs-keyword">others</span>=&gt;
+                <span class="hljs-keyword">null</span>;
+        <span class="hljs-keyword">end</span> <span class="hljs-keyword">case</span>;
+    <span class="hljs-keyword">end</span> <span class="hljs-keyword">process</span>;
+<span class="hljs-keyword">end</span> behav;
+</div></code></pre>
 <h3 id="412-d-latch">4.1.2 D Latch</h3>
 <pre><code class="language-VHDL"><div><span class="hljs-keyword">LIBRARY</span> IEEE;
 <span class="hljs-keyword">USE</span> IEEE.std_logic_1164.<span class="hljs-keyword">ALL</span>;
@@ -132,6 +162,26 @@
 </tr>
 </tbody>
 </table>
+<pre><code class="language-VHDL"><div><span class="hljs-keyword">Case</span> R&amp;S <span class="hljs-keyword">is</span>
+    <span class="hljs-keyword">When</span> “<span class="hljs-number">00</span>”=&gt; Q0&lt;=Q0;
+    <span class="hljs-keyword">When</span> “<span class="hljs-number">01</span>”=&gt; Q0&lt;=’<span class="hljs-number">0</span>’;
+    <span class="hljs-keyword">When</span> “<span class="hljs-number">10</span>”=&gt; Q0&lt;=’<span class="hljs-number">1</span>’;
+    <span class="hljs-keyword">When</span> “<span class="hljs-number">11</span>”=&gt; Q0&lt;=<span class="hljs-keyword">not</span> Q0;
+    <span class="hljs-keyword">When</span> <span class="hljs-keyword">others</span> =&gt;<span class="hljs-keyword">null</span>;
+<span class="hljs-keyword">End</span> <span class="hljs-keyword">case</span>;
+</div></code></pre>
+<h3 id="424-t触发器">4.2.4 T触发器</h3>
+<p>P77
+应用：计数器，期末答疑ppt43</p>
+<h3 id="425-sr锁存器">4.2.5 SR锁存器</h3>
+<pre><code class="language-VHDL"><div><span class="hljs-keyword">Case</span> R&amp;S <span class="hljs-keyword">is</span>
+    <span class="hljs-keyword">When</span> “<span class="hljs-number">00</span>”=&gt; Q1&lt;=Q1;
+    <span class="hljs-keyword">When</span> “<span class="hljs-number">01</span>”=&gt; Q1&lt;=’<span class="hljs-number">1</span>’;
+    <span class="hljs-keyword">When</span> “<span class="hljs-number">10</span>”=&gt; Q1&lt;=’<span class="hljs-number">0</span>’;
+    <span class="hljs-keyword">When</span> “<span class="hljs-number">11</span>”=&gt; Q1&lt;=’X’;
+    <span class="hljs-keyword">When</span> <span class="hljs-keyword">others</span> =&gt;<span class="hljs-keyword">null</span>;
+<span class="hljs-keyword">End</span> <span class="hljs-keyword">case</span>;
+</div></code></pre>
 <hr>
 <h2 id="43-寄存器register">4.3 寄存器Register</h2>
 <h3 id="multibit-register">Multibit Register</h3>
@@ -162,7 +212,7 @@
 <li>SIPO: Serial input –parallel output</li>
 <li>PISO: Parallel input –serial output</li>
 </ul>
-<h4 id="sipo-shift-register">SIPO shift register</h4>
+<h4 id="sipo-shift-register"><strong>SIPO shift register</strong></h4>
 <pre><code class="language-VHDL"><div><span class="hljs-keyword">LIBRARY</span> IEEE;
 <span class="hljs-keyword">USE</span> IEEE.std_logic_1164.<span class="hljs-keyword">all</span>;
 
@@ -186,6 +236,12 @@
 </div></code></pre>
 <hr>
 <h2 id="44-计数器counter">4.4 计数器Counter</h2>
+<h3 id="用t触发器构成计数器">用T触发器构成计数器</h3>
+<ul>
+<li>可能会产生毛刺 复习2pptP66</li>
+<li>注意代码和rtl图 课本p81</li>
+</ul>
+<h3 id="用普通加法做计数器">用普通加法做计数器</h3>
 <pre><code class="language-VHDL"><div><span class="hljs-keyword">LIBRARY</span> IEEE;
 <span class="hljs-keyword">USE</span> IEEE.std_logic_1164.<span class="hljs-keyword">all</span>;
 <span class="hljs-keyword">USE</span> IEEE.std_logic_unsigned.<span class="hljs-keyword">all</span>;

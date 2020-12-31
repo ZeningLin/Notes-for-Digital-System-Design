@@ -25,6 +25,7 @@
     </head>
     <body class="vscode-body vscode-light">
         <h1 id="第五章-同步时序电路设计">第五章 同步时序电路设计</h1>
+<p>考点：会画ASM图，能画出对应波形图，能写出代码</p>
 <h2 id="51-sequential-logic-circuit">5.1 Sequential Logic Circuit</h2>
 <h3 id="three-significant-time-parameters-p87"><strong>Three significant time parameters</strong> (P87)</h3>
 <ul>
@@ -52,7 +53,7 @@
 <li>It resembles software flow chart, but it has corresponding hardware structure.</li>
 </ul>
 <p><strong>Components</strong>(P90-91)</p>
-<img src="file:///c:\Users\Zening Lin\OneDrive\SCUT\Professional Courses\Digital System Design\Notes for Digital System Design\pictures\5-3-1-ASM-Chart-1.png">
+<img src="file:///c:\Users\Zening Lin\OneDrive\SCUT\Professional Courses\Digital System Design\Notes for Digital System Design\markdown\pictures\5-3-1-ASM-Chart-1.png">
 <h4 id="5221-state-box">5.2.2.1 State box</h4>
 <ul>
 <li>状态名称左上角，编码右上角，框内写操作内容</li>
@@ -70,11 +71,11 @@
 </ul>
 </li>
 <li>一个时钟周期内完成状态
-<img src="file:///c:\Users\Zening Lin\OneDrive\SCUT\Professional Courses\Digital System Design\Notes for Digital System Design\pictures\5-3-1-ASM-Chart-2.png"></li>
+<img src="file:///c:\Users\Zening Lin\OneDrive\SCUT\Professional Courses\Digital System Design\Notes for Digital System Design\markdown\pictures\5-3-1-ASM-Chart-2.png"></li>
 </ul>
 <h4 id="5222-decision-box">5.2.2.2 Decision Box</h4>
 <ul>
-<li>The decision box must <strong>followed and be associated with a state box</strong>. The decision is made in the <strong>same clock cycle</strong> as the actions of the associated state.</li>
+<li>The decision box must <strong>follow and be associated with a state box</strong>. The decision is made in the <strong>same clock cycle</strong> as the actions of the associated state.</li>
 </ul>
 <h4 id="5223-conditional-output-box">5.2.2.3 Conditional Output Box</h4>
 <ul>
@@ -87,6 +88,7 @@
 <li>(P91 图5-12) <code>Decision Box</code>与其上面的<code>State Box</code>在同一时钟周期内完成，若<code>Decison Box</code>下接<code>Conditional Output Box</code>，则该<code>Conditional Output Box</code>与上面的<code>Decison Box</code>和<code>State Box</code>在同一个时钟周期内完成操作</li>
 </ul>
 </li>
+<li>状态机有同步和非同步两种方式，按照常规方式为非同步（输出信号的时序不固定）；若使用临时量存储输出值，最后的输出操作放到seq中，则输出信号按照时钟时序输出，这种方式为同步。</li>
 </ul>
 <h4 id="5225-state-and-state-box">5.2.2.5 <strong>State and State Box</strong></h4>
 <ul>
@@ -103,24 +105,66 @@ r4</li>
 </ul>
 <p>Differences:</p>
 <ul>
-<li>Moore machine needs more stated than Mealy machine.</li>
+<li>Moore machine needs more states than Mealy machine.</li>
 <li>The output of Moore machine is independent of current input, <strong>the effect brought by current input will take palce in the next clock cycle</strong></li>
-<li>The outputt of Mealy machine depends on both current state and input. <strong>Input variation leads to immediate output change.</strong> The output can change during the current state.</li>
+<li>The output of Mealy machine depends on both current state and input. <strong>Input variation leads to immediate output change.</strong> The output can change during the current state.</li>
+<li>Moore 输出端自动同步，mealy需要人为加入同步信号</li>
 </ul>
+<p>判断方法：</p>
+<ol>
+<li>看ASM图，每一个状态框中是否要用到输入</li>
+<li>看RTL图，看输出是否依赖输入</li>
+</ol>
 <h4 id="in-terms-of-structure">In terms of structure</h4>
 <ul>
-<li>One Process: Needs more res</li>
+<li>One Process: Needs more res <strong>复习2P89</strong>
+<ul>
+<li>可能会引入很多额外的寄存器</li>
+<li><strong>将state定义为variable</strong></li>
+</ul>
+</li>
 <li>Two Process: Needs less res, recommended
 <ul>
 <li>最常见的seq和com两个进程，一个用于状态寄存器，一个用于控制次态逻辑和输出</li>
+<li><strong>常考</strong>，务必记住格式</li>
+<li>state应为signal 因为要在进程之间传递</li>
 </ul>
 </li>
 <li>Three Process
 <ul>
-<li>三个进程，一个状态寄存器，一个次态逻辑，一个当前状态输出</li>
+<li>三个进程，一个状态寄存器，一个次态逻辑，一个当前状态输出（把Two Process的com进程进一步拆分，次态逻辑部分和状态内操作分开）</li>
 </ul>
 </li>
 </ul>
+<h3 id="状态编码方式考察编码方式和选择">状态编码方式（考察编码方式和选择）</h3>
+<p>在综合的时候对Type枚举类型会进行编码，<strong>编码方式可以人为指定（复习2P109）课本p103格式</strong></p>
+<ul>
+<li>CPLD更多的提供组合逻辑，而FPGA更多的提供触发器资源，所以CPLD多使用gray-code，而FPGA多使用one-hot编码。</li>
+<li>对于小型设计使用gray-code和binary编码更有效，而大型状态机使用one-hot编码更有效。</li>
+</ul>
+<ol>
+<li>二进制编码</li>
+</ol>
+<ul>
+<li>需要寄存器数量最少</li>
+<li>需要更多外部辅助逻辑且速度较慢</li>
+</ul>
+<ol start="2">
+<li>格雷码</li>
+</ol>
+<ul>
+<li>触发器少</li>
+<li>速度慢</li>
+<li>不会产生两位同时反转的情况避免竞争冒险，异步使用的时候较为有利</li>
+</ul>
+<ol start="3">
+<li>one-hot编码</li>
+</ol>
+<ul>
+<li>寄存器数目最多</li>
+<li>逻辑简单速度快</li>
+</ul>
+<hr>
 
     </body>
     </html>

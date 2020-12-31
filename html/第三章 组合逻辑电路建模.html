@@ -133,10 +133,34 @@ co &lt;= (x <span class="hljs-keyword">AND</span> y) <span class="hljs-keyword">
     sun, co: <span class="hljs-keyword">OUT</span> <span class="hljs-built_in">std_logic</span>);
 <span class="hljs-keyword">END</span> full_adder;
 </div></code></pre>
+<h3 id="2-bit-full-adder"><strong>2-bit full adder</strong></h3>
+<pre><code class="language-vhdl"><div><span class="hljs-keyword">library</span> ieee;
+<span class="hljs-keyword">use</span> ieee.std_logic_1164.<span class="hljs-keyword">all</span>;
+
+<span class="hljs-keyword">entity</span> fadder2bit <span class="hljs-keyword">is</span>
+    <span class="hljs-keyword">port</span>(a,b: <span class="hljs-keyword">in</span> <span class="hljs-built_in">std_logic_vector</span>(<span class="hljs-number">1</span> <span class="hljs-keyword">downto</span> <span class="hljs-number">0</span>);
+    cin: <span class="hljs-keyword">in</span> <span class="hljs-built_in">std_logic</span>;
+    c: <span class="hljs-keyword">out</span> <span class="hljs-built_in">std_logic_vector</span>(<span class="hljs-number">1</span> <span class="hljs-keyword">downto</span> <span class="hljs-number">0</span>);
+    cout: <span class="hljs-keyword">out</span> <span class="hljs-built_in">std_logic</span>);
+<span class="hljs-keyword">end</span> <span class="hljs-keyword">entity</span>;
+
+<span class="hljs-keyword">architecture</span> behav <span class="hljs-keyword">of</span> fadder2bit <span class="hljs-keyword">is</span>
+<span class="hljs-keyword">signal</span> sint: <span class="hljs-built_in">std_logic_vector</span>(<span class="hljs-number">2</span> <span class="hljs-keyword">downto</span> <span class="hljs-number">0</span>);
+<span class="hljs-keyword">signal</span> aa,bb: <span class="hljs-built_in">std_logic_Vector</span>(<span class="hljs-number">1</span> <span class="hljs-keyword">downto</span> <span class="hljs-number">0</span>);
+<span class="hljs-keyword">begin</span>
+    aa&lt;=<span class="hljs-string">&#x27;0&#x27;</span>&amp;a;
+    bb&lt;=<span class="hljs-string">&#x27;0&#x27;</span>&amp;b;
+    sint&lt;=aa+bb+cin;
+    c&lt;=sint(<span class="hljs-number">1</span> <span class="hljs-keyword">downto</span> <span class="hljs-number">0</span>);
+    cout&lt;=sint(<span class="hljs-number">2</span>);
+<span class="hljs-keyword">end</span> behav;
+</div></code></pre>
 <h3 id="sequential-4-bit-adder">Sequential 4-bit Adder</h3>
 <ul>
 <li>Use packaged component</li>
 <li>See P55</li>
+<li>使用了空间迭代法</li>
+<li>还可以使用时间迭代法，见<code>期末答疑ppt24页</code></li>
 </ul>
 <h3 id="parallel-4-bit-adder">Parallel 4-bit Adder</h3>
 <ul>
@@ -205,8 +229,8 @@ co &lt;= (x <span class="hljs-keyword">AND</span> y) <span class="hljs-keyword">
     <span class="hljs-keyword">END</span> <span class="hljs-keyword">PROCESS</span>;
 <span class="hljs-keyword">END</span> behav;
 </div></code></pre>
-<h2 id="38-comparator">3.8 Comparator</h2>
-<h2 id="39-romram">3.9 ROM/RAM</h2>
+<h2 id="38-comparator"><s>3.8 Comparator</s></h2>
+<h2 id="39-romram"><s>3.9 ROM/RAM</s></h2>
 
     </body>
     </html>
