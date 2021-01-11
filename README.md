@@ -9,5 +9,3 @@ Notes for the course `Digital-System-Design` of SCUT in Term 2020 Fall.
 
 ## Attention
 All notes were initially written in `markdown` format. Transfered to `html` and `pdf` with vsc extensions. Hence format problems might be found in `html` or `pdf` files.
-
-The repository is still under construction.
