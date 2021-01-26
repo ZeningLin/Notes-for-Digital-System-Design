@@ -4,7 +4,6 @@
   1. **能画出测试结果的波形**
   2. **写Testbench程序**
 
-- ~~Testbench is a kind of VHDL Program~~
 - ~~Procedures using testbench~~
   - ~~Design Under Test instantiation~~
   - ~~Stimulus generation~~
